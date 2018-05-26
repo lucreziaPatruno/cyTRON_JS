@@ -1,0 +1,18 @@
+doctype html
+html
+    head
+        title() TRONCO functions
+        meta(name="viewport", content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1")
+    body
+        form(method='POST' action = '' enctype="multipart/form-data")
+            div.form-group
+                label(for = 'ModelChoice') Choose model
+                input#ModelChioce.form-control(type = 'file', placeholder = 'value of first parameter', name = 'ModelChoice', value =(undefined===model ? '' : model))
+            div.form-group
+                label(for = 'confidence') set confidence value
+                input#confidence.form-control(type = 'text', name = 'confidence', value = (undefined===conf ? '' : conf))
+            button.btn.btn-primary(type='submit') Submit
+        if errors
+            ul
+                for error in errors
+                    li!=error.msg

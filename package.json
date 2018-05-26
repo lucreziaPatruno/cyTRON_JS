@@ -1,0 +1,26 @@
+{
+  "name": "cytron-js",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "bootswatch": "^4.1.1",
+    "cookie-parser": "~1.4.3",
+    "cytoscape": "^3.2.12",
+    "cytoscape-dagre": "^2.2.1",
+    "cytoscape-graphml": "^1.0.5",
+    "cytoscape-panzoom": "^2.5.2",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "express-validator": "^5.2.0",
+    "formidable": "^1.2.1",
+    "http-errors": "~1.6.2",
+    "jquery": "^3.3.1",
+    "morgan": "~1.9.0",
+    "popper.js": "^1.14.3",
+    "pug": "2.0.0-beta11",
+    "r-script": "0.0.3"
+  }
+}
