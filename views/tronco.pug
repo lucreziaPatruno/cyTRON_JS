@@ -12,17 +12,23 @@ html
             div(id = "container2") 
                 div(id = 'form_title') Choose parameters
                 form(method='POST' action = '' enctype="multipart/form-data")
-                    div.form-group(class = 'custom-file')
-                        label(for="ModelChioce", class="custom-file-label", style="text-align:left") Choose your model
-                        input#ModelChioce.form-control(class = 'custom-file-input' type = 'file', placeholder = 'value of first parameter', name = 'ModelChoice', value =(undefined===model ? '' : model))
+                    div(id = 'left') Model:
+                        div.form-group(class = 'custom-file') 
+                            label(for="ModelChioce", class="custom-file-label", style="text-align:left") Choose your model
+                            input#ModelChioce.form-control(class = 'custom-file-input' type = 'file', placeholder = 'value of first parameter', name = 'ModelChoice', value =(undefined===model ? '' : model))
                     
-                    div.form-group
-                        label(for = 'confidence') Confidence
-                        select#confid.form-control(name = 'confidence')
-                            option(value='null') --
-                            option(value='hg') Hg
-                            option(value='tp') tp
-                            option(value='pr') pr
+                    div(class = 'form-group vert') Confidence:
+                        div(class = 'custom-control custom-checkbox space')
+                            input(class="custom-control-input" type="checkbox" value="hg" name = 'hg', id = "hg")
+                            label(class="custom-control-label" for = 'hg') hg
+                        div(class = 'custom-control custom-checkbox space')
+                            input(class="custom-control-input" type="checkbox" value="tp" name = 'tp', id = "tp") 
+                            label(class="custom-control-label" for ='tp') tp
+                        div(class = 'custom-control custom-checkbox space')
+                            input(class="custom-control-input" type="checkbox" value="pr" name = 'pr', id = "pr") 
+                            label(class="custom-control-label" for = 'pr') pr
+                                
+                            
                     button.btn.btn-primary(type='submit', class ='submission') Submit
                 if errors
                     ul

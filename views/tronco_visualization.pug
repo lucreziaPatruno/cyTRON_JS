@@ -12,6 +12,7 @@ html
     link(href = "/cytoscape-panzoom/cytoscape.js-panzoom.css", rel = "stylesheet",  type = "text/css")
 
     link(href = "/bootswatch/dist/cerulean/bootstrap.min.css", rel = "stylesheet", type = "text/css")
+
     
     script(src = "https://unpkg.com/cytoscape/dist/cytoscape.min.js", type = "text/javascript")
     
@@ -25,6 +26,8 @@ html
     script( src="https://unpkg.com/dagre@0.7.4/dist/dagre.js", type = "text/javascript")    
     script(src = "https://unpkg.com/cytoscape-dagre", type = "text/javascript")
     
+    
+
     script(src = "/javascripts/visualization.js", type = "text/javascript")
 
     
@@ -32,19 +35,6 @@ html
   body
     div(id ="container-title")
       h1 Welcome to cyTRON
+    div(style='display:none', id = 'graphstr')=content
     div(id ="container-graph")
       div(id = "cy")
-      div(id = "lateral")
-        div(id = "choose_graph")
-          div(id = "subtitle") Choose your graph
-          div(id = "file_choice" class = "custom-file")
-            input(type="file" id="files" class="custom-file-input" name="files[]" multiple)
-            label(class="custom-file-label" for="files")
-          | or
-          div(id="drop_zone") Drop your file here
-          output(id = "list")
-        div()
-          a(href = '/welcome/tronco/troncoPlot', id = 'create_graph') Create graph
-        div(id = "confidenceValues", style = 'visibility: hidden') Graph information will be displayed here
-    
-    

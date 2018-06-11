@@ -11,9 +11,10 @@
   padding-bottom: 2%;
   padding-left: 2%;
   padding-right: 2%;
-  justify-content: center;
+  /*justify-content: center;
   align-items: center;
   text-align: center;
+  align-content: center;*/
 
   display:table;
   background-color: #a0c5cf;
@@ -33,6 +34,14 @@
   padding-bottom: 8px;
   color: #005f89;
   margin-bottom: 8px;
+  height: auto;
+}
+
+#left {
+  text-align: left;
+  border-bottom: #005f89 solid;
+  border-bottom-width: thin;
+  padding-bottom: 
 }
 
 #form_title {
@@ -46,6 +55,10 @@
   border-bottom: #005f89 solid;
   color: #005f89;
   margin-bottom: 8px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  align-content: center;
 }
 .submission {
   
@@ -63,4 +76,22 @@
   display:table-cell;
   vertical-align:middle;
   padding:15px;
+  font-size: 16px;
+}
+
+.vert {
+  display: flex;
+  align-items: baseline
+
+}
+
+.custom-control-input {
+  margin-top: 0px;
+}
+
+.space {
+  margin-right: 5px;
+  margin-left: 5px;
+  margin-top : 10px;
+
 }
