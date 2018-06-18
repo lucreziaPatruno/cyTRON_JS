@@ -41,7 +41,7 @@
   text-align: left;
   border-bottom: #005f89 solid;
   border-bottom-width: thin;
-  padding-bottom: 
+  padding-bottom: 2px
 }
 
 #form_title {
@@ -90,8 +90,8 @@
 }
 
 .space {
-  margin-right: 5px;
-  margin-left: 5px;
+
+  margin-left: 3px;
   margin-top : 10px;
 
 }

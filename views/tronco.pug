@@ -15,9 +15,9 @@ html
                     div(id = 'left') Model:
                         div.form-group(class = 'custom-file') 
                             label(for="ModelChioce", class="custom-file-label", style="text-align:left") Choose your model
-                            input#ModelChioce.form-control(class = 'custom-file-input' type = 'file', placeholder = 'value of first parameter', name = 'ModelChoice', value =(undefined===model ? '' : model))
+                            input#ModelChioce(class = 'form-control-file' type = 'file', aria-describedby="fileHelp", name = 'ModelChoice')
                     
-                    div(class = 'form-group vert') Confidence:
+                    div(class = 'form-group vert', id = "left") Confidence:
                         div(class = 'custom-control custom-checkbox space')
                             input(class="custom-control-input" type="checkbox" value="hg" name = 'hg', id = "hg")
                             label(class="custom-control-label" for = 'hg') hg
@@ -27,8 +27,29 @@ html
                         div(class = 'custom-control custom-checkbox space')
                             input(class="custom-control-input" type="checkbox" value="pr" name = 'pr', id = "pr") 
                             label(class="custom-control-label" for = 'pr') pr
-                                
-                            
+                    div(class = 'form-group vert', id = "left")
+                        label(for = 'models_to_plot') Choose models:
+                        div(class = 'custom-control custom-checkbox space')
+                            input(name="capri_aic" class="custom-control-input" type="checkbox" value="capri_aic", id = 'capri_aic')
+                            label(class="custom-control-label" for = 'capri_aic') Capri_aic
+                        div(class = 'custom-control custom-checkbox space')
+                            input(name="caprese" class="custom-control-input" type="checkbox" value="caprese", id = 'caprese')
+                            label(class="custom-control-label" for = 'caprese') Caprese
+                        div(class = 'custom-control custom-checkbox space')
+                            input(name="capri_bic" class="custom-control-input" type="checkbox" value="capri_bic", id = 'capri_bic')
+                            label(class="custom-control-label" for = 'capri_bic') Capri_bic
+                    div(class = 'form-group vert', id = "pf_div")
+                        label(for = 'pf_div') Print Prima Facie
+                        div(class = 'custom-control custom-checkbox space')
+                            input(name="pf" class="custom-control-input" type="checkbox" value="pf", id = 'pf')
+                            label(class="custom-control-label" for = 'pf') Pf
+                    div(class = 'form-group vert', id = "title_div")
+                        label(for = 'title_div')
+                        div(class = 'custom-control custom-checkbox space')
+                            input(name="pf" class="custom-control-input" type="checkbox" value="pf", id = 'pf', disabled = '')
+                            label(class="custom-control-label" for = 'pf') Add title
+                            input(class="form-control form-control-sm" id="inputSmall" type="text" placeholder=".form-control-sm")
+
                     button.btn.btn-primary(type='submit', class ='submission') Submit
                 if errors
                     ul

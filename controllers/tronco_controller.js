@@ -31,6 +31,19 @@ exports.plot_graph_post = function(req, res, next) {
         if (fields.pr != undefined) {
             c_pr = 'pr'
         }
+        // Get the models to plot set by the user
+        var capri_bic = ''
+        var capri_aic = ''
+        var caprese = ''
+        if (fields.capri_bic != undefined) {
+            capri_bic = 'capri_bic'
+        }
+        if (fields.capri_aic != undefined) {
+            capri_aic = 'capri_aic'
+        }
+        if (fields.caprese != undefined) {
+            caprese = 'caprese'
+        }
         // Get the RData model selected by the user
         // TODO: validation of the file extension
         var mod = files['ModelChoice'];
@@ -41,11 +54,17 @@ exports.plot_graph_post = function(req, res, next) {
         if (err.length > 0) {
             res.render('tronco')
         }
-        
+        // Get the value of the 
+        var pf = false
+        if (fields.pf != undefined) {
+            pf = true
+        }
         var script = current_directory + "/test.R"
         var result_dir = current_directory+"/results"
         const result = rscript.callSync(script, {modelPath : mod.path.replace(/\\/g, "/"), modelName: fileName, 
-                                                    hg: c_hg, tp: c_tp, pr : c_pr, output_dir : result_dir});
+                                                    hg: c_hg, tp: c_tp, pr : c_pr, output_dir : result_dir,
+                                                capri_bic: capri_bic, capri_aic: capri_aic, caprese: caprese,
+                                                pf : pf});
         //const result = rscript.callSync(script);
         console.log(result)
         fs.readFile(result.result, function(error, data) {
