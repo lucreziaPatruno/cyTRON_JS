@@ -25,16 +25,18 @@ caprese = json$caprese
 conf = c(hg, tp, pr)
 conf = conf[conf != '']
 
+model = load(json$modelPath)
+
 mod = c(capri_bic, capri_aic, caprese)
 mod = mod[mod != '']
 if (length(mod) == 0) {
-    mod = names(get(modelName)$model)
+    mod = names(get(model)$model)
 }
 
-model = load(json$modelPath)
 
 prima_facie = json$pf
-outputFile =  paste(output, '/', modelName, '.graphml', sep = '')
+session = json$sess_id
+outputFile =  paste(output, '/', modelName, session, '.graphml', sep = '')
 
 export.graphml(get(model), outputFile, confidence = conf, scale.nodes = 0.6, models = mod, pf = prima_facie)
 # print(args);

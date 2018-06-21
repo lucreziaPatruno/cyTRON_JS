@@ -59,16 +59,21 @@ exports.plot_graph_post = function(req, res, next) {
         if (fields.pf != undefined) {
             pf = true
         }
+        console.log('################ Model path: ' + mod.path)
         var script = current_directory + "/test.R"
         var result_dir = current_directory+"/results"
         const result = rscript.callSync(script, {modelPath : mod.path.replace(/\\/g, "/"), modelName: fileName, 
                                                     hg: c_hg, tp: c_tp, pr : c_pr, output_dir : result_dir,
                                                 capri_bic: capri_bic, capri_aic: capri_aic, caprese: caprese,
-                                                pf : pf});
+                                                pf : pf,
+                                                sess_id : req.session.id});
         //const result = rscript.callSync(script);
         console.log(result)
-        fs.readFile(result.result, function(error, data) {
-            res.render('tronco_visualization', {content : data})
+        // Save the string containing the graphml into a session attribute and remove the file created by R from file system
+        fs.readFile(result.result, 'utf8', function(error, data) {
+            req.session.graph = data
+            fs.unlink(result.result)
+            res.render('tronco_visualization', {content : req.session.graph})
         });
 
         //res.render('tronco_visualization', {content : })
@@ -81,13 +86,24 @@ exports.plot_graph_post = function(req, res, next) {
         
     })*/
     form.on('fileBegin', function (name, file) {
-        file.path = __dirname + '/uploads/' + file.name;
+        // Load the file in the uploads dir, with the name followed by the current session ID
+        const [fileName, fileExt] = file.name.split('.')
+        file.path = __dirname + '/uploads/' + fileName + req.session.id + '.'+ fileExt;
+        /*if (fs.existsSync(path)) {
+            file.path = __dirname + '/uploads_prova/' + file.name;
+        } else {
+            fs.mk
+        }*/
+        
     });
 
     form.on('file', function (name, file) {
         console.log('file caricato:' + file.name)
         
     })
+
+    
+
 }
 /*exports.plot_graph_post = [
     body('ModelChioce', 'please upload Rdata file').custom((value, {req}) => {

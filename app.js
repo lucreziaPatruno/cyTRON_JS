@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var session = require('express-session')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -23,6 +24,9 @@ app.use(cookieParser());
 // the static directories with the express.static middleware function.
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(express.static(path.join(__dirname, '/node_modules')))
+
+app.use(session({secret : 'First secret',
+                  name : "id"}))
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
