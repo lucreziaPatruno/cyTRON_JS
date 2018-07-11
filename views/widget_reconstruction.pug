@@ -1,0 +1,98 @@
+extends layout
+
+block custom_css
+    link(href = "/stylesheets/widget.css", rel = "stylesheet", type = "text/css")
+
+block scripts  
+    script(src = "/javascripts/widget_reconstruction.js", type = "text/javascript")
+
+
+block content
+    div(class = 'container' style='padding-top: 50px')
+        div(class = 'container col-7 py-2 main_div', style = 'color:white')
+            h2(class = 'display-6', style = 'color: white') Data successfully loaded
+            | Choose which function to use for the reconstruction
+            div.container(style = 'display: flex; justify-content: center; align-items: center;')
+                button(class = "btn btn-block" style = 'background-color: #234a56; color: white' data-toggle = 'collapse', data-target = '#capri', type = 'button') Reconstruct using Capri
+            form(method='POST' action = 'files_loaded/capri' enctype="multipart/form-data")
+                div(id = 'capri', class = 'collapse my-3')
+                    div(class = 'container')
+                        div.row
+                            div.col-4() Command:
+                            div.col()
+                                div(class = 'custom-control custom-checkbox mb-3') 
+                                    input(name="hc" class="custom-control-input" type="checkbox" value="hc", id = 'hc')
+                                    label(class="custom-control-label" for = 'hc') Hill Climbing  
+                            div.col()
+                                div(class = 'custom-control custom-checkbox space') 
+                                    input(name="tabu" class="custom-control-input" type="checkbox" value="tabu", id = 'tabu')
+                                    label(class="custom-control-label" for = 'tabu') Tabu  
+                    div.container 
+                        div.row
+                            div.col-4() Regularization:
+                            div.col()
+                                div(class = 'custom-control custom-checkbox mb-3') 
+                                    input(name="bic" class="custom-control-input" type="checkbox" value="bic", id = 'bic')
+                                    label(class="custom-control-label" for = 'bic') Bic  
+                            div.col()
+                                div(class = 'custom-control custom-checkbox') 
+                                    input(name="aic" class="custom-control-input" type="checkbox" value="aic", id = 'aic')
+                                    label(class="custom-control-label" for = 'aic') Aic  
+                    
+                    div.container 
+                        div.row
+                            div.col-4() Estimate error rate:
+                            div.col()
+                                
+                                div(class = 'custom-control custom-checkbox mb-3') 
+                                    input(name="boot" class="custom-control-input" type="checkbox" value="boot", id = 'boot')
+                                    label(class="custom-control-label" for = 'boot') Yes  
+                            div.col()
+                                div(class = 'custom-control custom-checkbox') 
+                                    input(name="aic" class="custom-control-input" type="checkbox" value="no_boot", id = 'no_boot')
+                                    label(class="custom-control-label" for = 'no_boot') No
+                    button(type='submit', class ='btn btn-primary btn-lg', id = 'btn_sub', data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing Order") Submit
+            form(method='POST' action = 'files_loaded/caprese' enctype="multipart/form-data")          
+
+                hr(style = 'border-color: white')
+                div.container(style = 'display: flex; justify-content: center; align-items: center;')
+                    button(class = "btn btn-block" style = 'background-color: #234a56; color: white' data-toggle = 'collapse', data-target = '#caprese', type = 'button') Reconstruct using Caprese
+                div(id = 'caprese', class = 'collapse my-3')
+                    div(class = 'container')
+                        div.row
+                            div.col-4() Error-rate:
+                            div.col()
+                                div(class = 'custom-control custom-checkbox mb-3') 
+                                    input(name="fp" class="custom-control-input" type="checkbox" value="fp", id = 'fp')
+                                    label(class="custom-control-label" for = 'fp') False positive  
+                            div.col()
+                                div(class = 'custom-control custom-checkbox space') 
+                                    input(name="fn" class="custom-control-input" type="fn" value="fn", id = 'fn')
+                                    label(class="custom-control-label" for = 'fn') False negative  
+                    div.container 
+                        div.row
+                            div.col-4() Regularization:
+                            div.col()
+                                div(class = 'custom-control custom-checkbox mb-3') 
+                                    input(name="bic" class="custom-control-input" type="checkbox" value="bic", id = 'bic')
+                                    label(class="custom-control-label" for = 'bic') Bic  
+                            div.col()
+                                div(class = 'custom-control custom-checkbox') 
+                                    input(name="aic" class="custom-control-input" type="checkbox" value="aic", id = 'aic')
+                                    label(class="custom-control-label" for = 'aic') Aic  
+                    
+                    div.container 
+                        div.row
+                            div.col-4() Estimate error rate:
+                            div.col()
+                                
+                                div(class = 'custom-control custom-checkbox mb-3') 
+                                    input(name="boot" class="custom-control-input" type="checkbox" value="boot", id = 'boot')
+                                    label(class="custom-control-label" for = 'boot') Yes  
+                            div.col()
+                                div(class = 'custom-control custom-checkbox') 
+                                    input(name="aic" class="custom-control-input" type="checkbox" value="no_boot", id = 'no_boot')
+                                    label(class="custom-control-label" for = 'no_boot') No
+                button(type='submit', class ='btn btn-primary btn-lg', id = 'btn_sub', data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing Order") Submit
+                        
+                div(id = 'waiting_area')

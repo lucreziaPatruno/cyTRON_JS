@@ -1,0 +1,29 @@
+.prova {
+    text-align: center
+}
+
+.vert {
+    display: flex;
+    align-items: baseline
+  
+}
+
+#left {
+    text-align: left;
+    border-bottom: #005f89 solid;
+    border-bottom-width: thin;
+    padding-bottom: 2px
+}
+
+.main_div::after {
+    content: "";
+    background-color: #03131f;
+    border-radius: 2px;
+    opacity: 0.9;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+}

@@ -1,0 +1,31 @@
+extends layout
+
+block content
+    div(class = 'container')
+        div(class="mx-auto" style="width: 200px; border: solid") Centered element
+    
+    div(class="container")
+        div(class="mx-auto", style = 'border:solid') ciao ciao
+    div(class="container col-8")
+        div(class="row justify-content-md-center")
+            div(class="col-auto", style = 'border:solid') One of three columns
+            div(class="col-auto", style = 'border:solid') One of three columns
+            div(class="col-auto", style = 'border:solid') One of three columns  
+        div(class="row")
+            div(class="col", style = 'text-align: center; border:solid') One of three columns
+            div(class="col offset-1", style = 'text-align: center; border:solid') One of three columns
+            div(class="col", style = 'text-align: center; border:solid') One of three columns  
+
+    div(class="container")
+        div(class="row justify-content-md-center")
+            div(class="col-auto order-3", style = 'border:solid') 1
+            div(class="col-auto order-1", style = 'border:solid') 2
+            div(class="col-auto order-2", style = 'border:solid') 3  
+    
+    div(class="container")
+        div(class="row justify-content-md-center")
+            div(class="col-auto mr-auto", style = 'border:solid') 1
+            div(class="col-auto px-5 py-5", style = 'border:solid') 2
+            div(class="col-auto ml-auto", style = 'border:solid') 3  
+             
+        

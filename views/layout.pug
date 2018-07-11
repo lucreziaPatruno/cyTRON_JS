@@ -1,7 +1,35 @@
 doctype html
 html
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body
-    block content
+    meta(name="viewport", content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1")
+    
+    link(href="/cytoscape-panzoom/font-awesome-4.0.3/css/font-awesome.css", rel="stylesheet" type="text/css")
+
+    link(href = "/bootswatch/dist/cerulean/bootstrap.min.css", rel = "stylesheet", type = "text/css")
+
+    link(href ='/stylesheets/layout.css', rel = 'stylesheet', type = 'text/css')
+
+    script(src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous", type = 'text/javascript')
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous", type = 'text/javascript')
+    script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous", type = 'text/javascript')
+   
+    block scripts
+
+    block custom_css
+    
+  body()
+    div(id = 'prova')
+        nav(class="navbar navbar-expand-lg navbar-light" style = 'background:#03131f; background-repeat: no-repeat; background-size: 100%;')
+            a(class = "navbar-brand" href = '#', style = 'color: white !important') cyTRON/JS
+            button(class = "navbar-toggler" aria-expanded="false" aria-controls="navbarColor02" aria-label="Toggle navigation" type="button" data-target="#navbarColor02" data-toggle="collapse")
+                span(class="navbar-toggler-icon")
+
+            div(class="collapse navbar-collapse" id="navbarColor02")             
+                ul(class="navbar-nav mr-auto")
+                    li(class="nav-item active")
+                        a(class = "nav-link" href = '/', style = 'color: white !important') Home
+                        span( class = "sr-only") (current)
+                    li(class = 'nav-item')
+                        a(class = "nav-link" href = '#', style = 'color: white !important') About TRONCO
+        block content
+    

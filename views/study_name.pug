@@ -1,0 +1,23 @@
+extends layout
+
+block custom_css
+    link(href = "/stylesheets/study_name.css", rel = "stylesheet", type = "text/css")
+
+block content
+    div(class = 'container my-5 col-6 py-2' id = 'main_div')
+        div(class = 'container')
+            form(method='POST' action = '' enctype="multipart/form-data", class = 'form-signin')
+                div(class = 'container py-3', style = 'text-align:center')
+                    h3(style = 'color : white') Insert a name for your study
+    
+                div(class = 'form-group')
+                    label(for="studyName" class="sr-only") e.g. PicNic-COADREAD
+                    input#inputName(type="text" name = 'inputName' style = 'border: solid 1px #234a56' class="form-control" placeholder="e.g. PicNic-COADREAD" required autofocus)
+                div.container(style = 'display: flex; justify-content: center; align-items: center;')
+                    button.btn(type='submit', style = 'background-color: #234a56; color: white') Submit
+        if error 
+            ul
+                li!= error
+        hr(style = 'border-color: white')
+        div(class = 'container')
+            h1() Models list

@@ -1,0 +1,77 @@
+extends layout
+block scripts
+    script(src = "/javascripts/waiting.js", type = "text/javascript")
+block custom_css
+    link(href = "/stylesheets/widget.css", rel = "stylesheet", type = "text/css")
+
+block content
+    div(class = 'container' style='padding-top: 50px')
+        
+        form(method='POST' action = '' enctype="multipart/form-data")
+            div(class = 'container col-7 py-2 main_div', style = 'color:white')
+                
+                h2(class = 'display-6', style = 'color: white') Step 1 -
+                    |  Choose input file(s)
+                | This should be data of a given cancer type which has already been pre-processed
+                div(class = 'form-group vert')
+                    div(class = 'container')
+                        div(class = 'custom-control custom-checkbox space')
+                            input(name="MAF" class="custom-control-input" type="checkbox" value="MAF", id = 'MAF')
+                            label(class="custom-control-label" for = 'MAF') Choose MAF file    
+                    
+                    div(class="input-group mb-3")
+                        div( class="custom-file")
+                            input(class="custom-file-input" name="MAFinput" type="file")
+                            label(class="custom-file-label" for="MAFinput") Choose file
+                div(class = 'form-group vert')
+                    div(class = 'container vert')
+                        div(class = 'custom-control custom-checkbox space')
+                            input(name="gistic" class="custom-control-input" type="checkbox" value="gistic", id = 'gistic')
+                            label(class="custom-control-label" for = 'gistic') Choose GISTIC file
+                    div(class="input-group mb-3")
+                        div( class="custom-file")
+                            input(class="custom-file-input" name="GISTICinput" type="file")
+                            label(class="custom-file-label" for="GISTICinput") Choose file
+                div(class = 'form-group vert')
+                    div(class = 'container vert')
+                        div(class = 'custom-control custom-checkbox space')
+                            input(name="boolean" class="custom-control-input" type="checkbox" value="boolean", id = 'boolean')
+                            label(class="custom-control-label" for = 'boolean') Choose custom Boolean input 
+                    
+                    div(class="input-group mb-3")
+                        div(class="custom-file")
+                            input(class="custom-file-input" name="BOOLEANinput" type="file")
+                            label(class="custom-file-label" for="BOOLEANinput") Choose file
+
+                div(class="form-group vert")
+                    div(class = 'container vert')
+                        div(class = 'custom-control custom-checkbox space')
+                            input(name="event_annotation" class="custom-control-input" type="checkbox" value="event_annotation", id = 'event_annotation')
+                            label(class="custom-control-label" for = 'event_annotation') Set the name of the events contained in your custom input 
+                    div(class = 'input-group mb-3')
+                        div(class='custom-file')
+                            input(class="form-control form-control-sm" id="event_type" name = 'event_type' type="text")
+
+                hr(style = 'border-color: white')
+                div(class="form-group vert")
+                    div(class = 'container')
+                        h2(class = 'display-6', style = 'color:white') Step 2 -
+                            |  Choose pathways or genes of interest
+                        | This step can be used to further annotate the result and speed up the computation, 
+                        | as only genes in this list will be taken into consideration
+                div(class = 'form-group vert')
+                    div(class = 'container vert')
+                        div(class = 'custom-control custom-checkbox space')
+                            input(name="ineterst" class="custom-control-input" type="checkbox" value="interest", id = 'interest')
+                            label(class="custom-control-label" for = 'interest') Choose genes of interest  
+                    
+                    div(class="input-group mb-3")
+                        div( class="custom-file")
+                            input(class="custom-file-input" name="INTERESTinput" type="file")
+                            label(class="custom-file-label" for="INTERESTinput") Choose file      
+                button(type='submit', class ='btn btn-primary btn-lg', id = 'btn_sub', data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing Order") Submit
+                div(id = 'waiting_area')
+        
+        
+    
+    

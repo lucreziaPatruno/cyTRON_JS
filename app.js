@@ -6,7 +6,7 @@ var logger = require('morgan');
 var session = require('express-session')
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var troncoRouter = require('./routes/tronco');
 var welcomeRouter = require('./routes/welcome');
 
 var app = express();
@@ -24,9 +24,11 @@ app.use(cookieParser());
 // the static directories with the express.static middleware function.
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(express.static(path.join(__dirname, '/node_modules')))
+app.use(session({secret : 'First secret',
+                  name : "id"}))
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/tronco', troncoRouter);
 app.use('/welcome', welcomeRouter);
 
 // catch 404 and forward to error handler
