@@ -8,69 +8,136 @@ block content
     div(class = 'container' style='padding-top: 50px')
         
         form(method='POST' action = '' enctype="multipart/form-data")
-            div(class = 'container col-7 py-2 main_div', style = 'color:white')
-                
-                h2(class = 'display-6', style = 'color: white') Step 1 -
-                    |  Choose input file(s)
-                | This should be data of a given cancer type which has already been pre-processed
-                div(class = 'form-group vert')
-                    div(class = 'container')
-                        div(class = 'custom-control custom-checkbox space')
-                            input(name="MAF" class="custom-control-input" type="checkbox" value="MAF", id = 'MAF')
-                            label(class="custom-control-label" for = 'MAF') Choose MAF file    
+            div(class = 'container col-10 py-2 main_div', style = 'color:white')
+                div(id="myCarousel" class='carousel slide' data-ride='carousel' data-interval="false")
+                    ol(class = 'carousel-indicators')
+                        li(data-target="#myCarousel" data-slide-to="0" class="active")
+                        li(data-target="#myCarousel" data-slide-to="1")
+                        li(data-target="#myCarousel" data-slide-to="2")
                     
-                    div(class="input-group mb-3")
-                        div( class="custom-file")
-                            input(class="custom-file-input" name="MAFinput" type="file")
-                            label(class="custom-file-label" for="MAFinput") Choose file
-                div(class = 'form-group vert')
-                    div(class = 'container vert')
-                        div(class = 'custom-control custom-checkbox space')
-                            input(name="gistic" class="custom-control-input" type="checkbox" value="gistic", id = 'gistic')
-                            label(class="custom-control-label" for = 'gistic') Choose GISTIC file
-                    div(class="input-group mb-3")
-                        div( class="custom-file")
-                            input(class="custom-file-input" name="GISTICinput" type="file")
-                            label(class="custom-file-label" for="GISTICinput") Choose file
-                div(class = 'form-group vert')
-                    div(class = 'container vert')
-                        div(class = 'custom-control custom-checkbox space')
-                            input(name="boolean" class="custom-control-input" type="checkbox" value="boolean", id = 'boolean')
-                            label(class="custom-control-label" for = 'boolean') Choose custom Boolean input 
-                    
-                    div(class="input-group mb-3")
-                        div(class="custom-file")
-                            input(class="custom-file-input" name="BOOLEANinput" type="file")
-                            label(class="custom-file-label" for="BOOLEANinput") Choose file
+                    div(class="carousel-inner")
+                        div(class = 'carousel-item active')
+                        
+                            div(class='container col-8 my-1')
+                                h2(class = 'display-6', style = 'color: white') Step 1 -
+                                    |  Choose input file(s)
+                                | This should be data of a given cancer type which has already been pre-processed
+                                div(class = 'form-group vert')
+                                    div(class = 'container')
+                                        div(class = 'custom-control custom-checkbox space')
+                                            input(name="MAF" class="custom-control-input" type="checkbox" value="MAF", id = 'MAF')
+                                            label(class="custom-control-label" for = 'MAF') Choose MAF file    
+                                    
+                                    div(class="input-group mb-3")
+                                        div( class="custom-file")
+                                            input(class="custom-file-input" name="MAFinput" type="file")
+                                            label(class="custom-file-label" for="MAFinput") Choose file
+                                    h3(id="helpIcon" data-toggle="modal" data-target="#myModal") &nbsp;&nbsp;&nbsp; 
+                                        span(class="glyphicon glyphicon-question-sign")
 
-                div(class="form-group vert")
-                    div(class = 'container vert')
-                        div(class = 'custom-control custom-checkbox space')
-                            input(name="event_annotation" class="custom-control-input" type="checkbox" value="event_annotation", id = 'event_annotation')
-                            label(class="custom-control-label" for = 'event_annotation') Set the name of the events contained in your custom input 
-                    div(class = 'input-group mb-3')
-                        div(class='custom-file')
-                            input(class="form-control form-control-sm" id="event_type" name = 'event_type' type="text")
+                                div(class='form-group vert')
+                                    div.container
+                                        label(for="maf_separator_selection" class= "col-form-label") Select file separator:
+                                    div(class = 'custom-file')
+                                        select(class="form-control" id="maf_separator_selection" name='maf_separator_selection')
+                                            each c, index in ['Space/tabs', ';', ',']
+                                                option(value = c) #{c}
+                                div(class = 'form-group vert')
+                                    div(class = 'container vert')
+                                        div(class = 'custom-control custom-checkbox space')
+                                            input(name="gistic" class="custom-control-input" type="checkbox" value="gistic", id = 'gistic')
+                                            label(class="custom-control-label" for = 'gistic') Choose GISTIC file
+                                    div(class="input-group mb-3")
+                                        div( class="custom-file")
+                                            input(class="custom-file-input" name="GISTICinput" type="file")
+                                            label(class="custom-file-label" for="GISTICinput") Choose file
+                                div(class='form-group vert')
+                                    div.container
+                                        label(for="gistic_separator_selection" class= "col-form-label") Select file separator:
+                                    div(class = 'custom-file')
+                                        select(class="form-control" id="gistic_separator_selection" name='gistic_separator_selection')
+                                            each c, index in ['Space/tabs', ';', ',']
+                                                option(value = c) #{c}
+                                div(class = 'form-group vert')
+                                    div(class = 'container vert')
+                                        div(class = 'custom-control custom-checkbox space')
+                                            input(name="boolean" class="custom-control-input" type="checkbox" value="boolean", id = 'boolean')
+                                            label(class="custom-control-label" for = 'boolean') Choose custom Boolean input 
+                                    
+                                    div(class="input-group mb-3")
+                                        div(class="custom-file")
+                                            input(class="custom-file-input" name="BOOLEANinput" type="file")
+                                            label(class="custom-file-label" for="BOOLEANinput") Choose file
+                                div(class='form-group vert')
+                                    div.container
+                                        label(for="boolean_separator_selection" class= "col-form-label") Select file separator:
+                                    div(class = 'custom-file')
+                                        select(class="form-control" id="boolean_separator_selection" name='boolean_separator_selection')
+                                            each c, index in ['Space/tabs', ';', ',']
+                                                option(value = c) #{c}
 
-                hr(style = 'border-color: white')
-                div(class="form-group vert")
-                    div(class = 'container')
-                        h2(class = 'display-6', style = 'color:white') Step 2 -
-                            |  Choose pathways or genes of interest
-                        | This step can be used to further annotate the result and speed up the computation, 
-                        | as only genes in this list will be taken into consideration
-                div(class = 'form-group vert')
-                    div(class = 'container vert')
-                        div(class = 'custom-control custom-checkbox space')
-                            input(name="ineterst" class="custom-control-input" type="checkbox" value="interest", id = 'interest')
-                            label(class="custom-control-label" for = 'interest') Choose genes of interest  
-                    
-                    div(class="input-group mb-3")
-                        div( class="custom-file")
-                            input(class="custom-file-input" name="INTERESTinput" type="file")
-                            label(class="custom-file-label" for="INTERESTinput") Choose file      
-                button(type='submit', class ='btn btn-primary btn-lg', id = 'btn_sub', data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing Order") Submit
+                                div(class="form-group vert")
+                                    div(class = 'container vert')
+                                        div(class = 'custom-control custom-checkbox space')
+                                            input(name="event_annotation" class="custom-control-input" type="checkbox" value="event_annotation", id = 'event_annotation')
+                                            label(class="custom-control-label" for = 'event_annotation') Set the name of the events contained in your custom input 
+                                    div(class = 'input-group mb-3')
+                                        div(class='custom-file')
+                                            input(class="form-control form-control-sm" id="event_type" name = 'event_type' type="text")
+                        div(class = 'carousel-item')
+                            div(class='container col-8')
+                                div(class="form-group vert")
+                                    div(class = 'container')
+                                        h2(class = 'display-6', style = 'color:white') Step 2 -
+                                            |  Choose pathways or genes of interest
+                                        | This step can be used to further annotate the result and speed up the computation, 
+                                        | as only genes in this list will be taken into consideration
+                                div(class = 'form-group vert')
+                                    div(class = 'container vert')
+                                        div(class = 'custom-control custom-checkbox space')
+                                            input(name="ineterst" class="custom-control-input" type="checkbox" value="interest", id = 'interest')
+                                            label(class="custom-control-label" for = 'interest') Choose genes of interest  
+                                    
+                                    div(class="input-group mb-3")
+                                        div( class="custom-file")
+                                            input(class="custom-file-input" name="INTERESTinput" type="file")
+                                            label(class="custom-file-label" for="INTERESTinput") Choose file 
+                        div(class = 'carousel-item')
+                            div(class='container col-8')
+                                div(class="form-group vert")
+                                    div(class = 'container')
+                                        h2(class = 'display-6', style = 'color:white') Step 3 -
+                                            |  Insert cluster file (Optional)
+                                        | Insert a file where the samples are associated to a specific tumor subtype
+                                div(class = 'container')
+                                    div.row
+                                        div.col
+                                            div(class = 'custom-control custom-checkbox ')
+                                                input(name="y_cluster" class="custom-control-input" type="checkbox" value="y_cluster", id = 'y_cluster')
+                                                label(class="custom-control-label" for = 'y_cluster') Add cluster file 
+                                        div.col
+                                            div(class="input-group mb-3")
+                                                div( class="custom-file")
+                                                    input(class="custom-file-input" name="CLUSTERinput" type="file")
+                                                    label(class="custom-file-label" for="CLUSTERinput") Choose file           
+                                        div(class='w-100')
+                                        div(class='col my-1')
+                                            label(for="cl_separator_selection" class= "col-form-label") Select file separator:
+                                        div(class='col my-1')
+                                            select(class="form-control" id="cl_separator_selection" name='cl_separator_selection')
+                                                each c, index in ['Space/tabs', ';', ',']
+                                                    option(value = c) #{c}
+   
+                                button(type='submit', class ='btn btn-primary btn-lg', id = 'btn_sub', data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing Order") Submit
+                    a(class = 'carousel-control-prev' href='#myCarousel' role='button' data-slide='prev')
+                        span(class="carousel-control-prev-icon" aria-hidden="true")
+                        span(class='sr-only') Previous
+                    a(class='carousel-control-next' role='button' href='#myCarousel' data-slide='next')
+                        span(class='carousel-control-next-icon')
+                        span(class="sr-only") Next
                 div(id = 'waiting_area')
+            
+
         
         
     

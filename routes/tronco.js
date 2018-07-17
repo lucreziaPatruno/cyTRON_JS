@@ -21,4 +21,8 @@ router.post('/files_loaded/capri', widget.files_loaded_capri_post)
 
 router.post('/files_loaded/caprese', widget.files_loaded_caprese_post)
 
+router.get('/cluster_selection', widget.select_clusters_get)
+
+router.post('/cluster_selection', widget.select_clusters_post)
+
 module.exports = router;

@@ -16,10 +16,14 @@ GISTIC.file = json$gistic_path
 BOOLEAN.file = json$boolean_path
 genes_interest = json$genes_interest
 custom_event = json$custom_event
+clusters.file = json$clusters_path
+cluster_separator = json$cluster_separator
+maf_separator = json$maf_separator
+gistic_separator = json$gistic_separator
+boolean_separator = json$boolean_separator
 # TODO: ------------------
 # clinical.file = json$clinical_path
-# GISTIC.file = json$gistic_path
-# clusters.file = json$clusters_path 
+#  
 # memo.file = json$memo_path
 # -------------------------
 
@@ -52,13 +56,24 @@ MAF.GISTIC = NA
 # instatiate a Vector to keep track of the different inputs submitted
 inputs = c('', '', '')
 if (MAF.file != '') {
-    MAF =
-    import.MAF(file = MAF.file, 
-               is.TCGA = TRUE,
-               # sep = ';',
-               filter.fun = filter_function # filter
-               # merge.mutation.types = FALSE
-               )
+    if (maf_separator == '') {
+        MAF =
+        import.MAF(file = MAF.file, 
+                is.TCGA = TRUE,
+                # sep = ';',
+                filter.fun = filter_function # filter
+                # merge.mutation.types = FALSE
+                )
+    }
+    else {
+        MAF =
+        import.MAF(file = MAF.file, 
+                is.TCGA = TRUE,
+                sep = maf_separator,
+                filter.fun = filter_function # filter
+                # merge.mutation.types = FALSE
+                )
+    }
 
     # Check for duplicate samples. If any, remove them
     multiple = TCGA.multiple.samples(MAF)
@@ -78,8 +93,12 @@ if (MAF.file != '') {
 }
 
 if (GISTIC.file != '') {
-
-    GISTIC = import.GISTIC(x = GISTIC.file, filter.genes = gene.list)
+    if (gistic_separator == '') {
+        GISTIC = import.GISTIC(x = GISTIC.file, filter.genes = gene.list)
+    } else {
+        GISTIC = import.GISTIC(x = GISTIC.file, sep = gistic_separator, filter.genes = gene.list)
+    }
+    
 
     if (clinical.data != '')
         GISTIC = annotate.stages(GISTIC, clinical.data)
@@ -114,7 +133,7 @@ if (GISTIC.file != '') {
 }
 if (BOOLEAN.file != '') {
     
-    boolean.table = read.table(BOOLEAN.file, header=TRUE, stringsAsFactors=FALSE)
+    boolean.table = read.table(BOOLEAN.file, header=TRUE, sep = boolean_separator, stringsAsFactors=FALSE)
     BOOLEAN = import.genotypes(boolean.table, event.type= custom_event, color='darkorange2')
     BOOLEAN = TCGA.shorten.barcodes(BOOLEAN)
     BOOLEAN = annotate.description(x = BOOLEAN, label = paste0(custom_event, 'data'))
@@ -136,7 +155,11 @@ if (BOOLEAN.file != '') {
 
 
 }
+# Now get the cluter file
+file = read.delim(clusters.file, sep = cluster_separator)
+
+
 inputs = inputs[inputs != '']
 final_to_plot = paste(inputs, collapse = '.')
-output <- list(result = 'no_errors', to_plot = paste(final_to_plot, 'RData', sep = '.'))
+output <- list(result = 'no_errors', to_plot = paste(final_to_plot, 'RData', sep = '.'), columns = colnames(file))
 print(toJSON(output));

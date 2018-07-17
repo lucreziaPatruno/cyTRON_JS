@@ -1,0 +1,57 @@
+extends layout
+
+block custom_css
+    link(href = "/stylesheets/widget.css", rel = "stylesheet", type = "text/css")
+
+block content
+    div(class = 'container py-5' style = 'border:solid white')
+        div(class = 'container main_div col-8 py-3', style='color: white')
+            h2(style = 'color:white') Data successfully loaded
+            hr(style='border-color:white')
+            form(method='POST' action = '' enctype="multipart/form-data")
+                div(class="form-group")
+                    div(class='row')
+                        div(class='col my-1')
+                            label(for="cluster_selection" class= "col-form-label") Select the column containg the clusters names
+                        div(class='col my-1')
+                            select(class="form-control" id="cluster_selection" name='cluster_selection')
+                                option --Select column name--
+                                each c, index in columns
+                                    option(value = index) #{c}
+                        div(class='w-100')
+                        div(class='col my-1')
+                            label(for="cluster_selection" class= "col-form-label") Select the column containg samples IDs
+                        div(class='col my-1')
+                            select(class="form-control" id="id_selection" name='id_selection')
+                                option --Select column name--
+                                each c, index in columns
+                                    option(value = index) #{c}
+                        div(class='w-100')
+                        div(class='col my-1')
+                            label(for="freq_selection" class="col-form-label") Insert minimum frequency:
+                        div(class="col my-1")
+                            input(type="number" class="form-control" id="freq_selection" name='freq_selection' min=0 max=1 step=0.001)
+                        div(class='w-100')
+                        div(class='col my-1')
+                            label(for="sep_selection" class="col-form-label") Select the :
+                        div(class="col my-1")
+                            fieldset
+                                div.form-group
+                                    div(class="custom-control custom-radio custom-control-inline")
+                                        input(type="radio" id="customRadio1" name="customRadio" class="custom-control-input" checked="")
+                                        label(class="custom-control-label" for="customRadio1") space
+                                    div(class="custom-control custom-radio custom-control-inline")
+                                        input(type="radio" id="customRadio2" name="customRadio" class="custom-control-input")
+                                        label(class="custom-control-label" for="customRadio2") ;
+                                    div(class="custom-control custom-radio custom-control-inline")
+                                        input(type="radio" id="customRadio3" name="customRadio" class="custom-control-input")
+                                        label(class="custom-control-label" for="customRadio3") ,
+                       
+
+                div.container(style = 'display: flex; justify-content: center; align-items: center;')
+                    button.btn(type='submit', style = 'background-color: #234a56; color: white ') Submit
+
+    
+
+
+    
