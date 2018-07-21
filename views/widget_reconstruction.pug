@@ -12,47 +12,56 @@ block content
         div(class = 'container col-7 py-2 main_div', style = 'color:white')
             h2(class = 'display-6', style = 'color: white') Data successfully loaded
             | Choose which function to use for the reconstruction
-            div.container(style = 'display: flex; justify-content: center; align-items: center;')
-                button(class = "btn btn-block" style = 'background-color: #234a56; color: white' data-toggle = 'collapse', data-target = '#capri', type = 'button') Reconstruct using Capri
-            form(method='POST' action = 'files_loaded/capri' enctype="multipart/form-data")
+            form(method='POST' action = 'files_loaded/reconstruction' enctype="multipart/form-data")
+                div.row
+                    div(class='col my-1')
+                        label(for="cluster_selection" class= "col-form-label") Select the cluster to include in the reconstruction:
+                    div(class='col my-1 py-3')
+                        select(class="form-control" id="cluster_selection" name='cluster_selection')
+                            option --Select cluster--
+                            each c in clusters
+                                option(value = c) #{c}
+                div.container(style = 'display: flex; justify-content: center; align-items: center;')
+                    button(class = "btn btn-block" style = 'background-color: #234a56; color: white' data-toggle = 'collapse', data-target = '#capri', type = 'button') Reconstruct using Capri
+            
                 div(id = 'capri', class = 'collapse my-3')
                     div(class = 'container')
                         div.row
                             div.col-4() Command:
-                            div.col()
-                                div(class = 'custom-control custom-checkbox mb-3') 
-                                    input(name="hc" class="custom-control-input" type="checkbox" value="hc", id = 'hc')
-                                    label(class="custom-control-label" for = 'hc') Hill Climbing  
-                            div.col()
-                                div(class = 'custom-control custom-checkbox space') 
-                                    input(name="tabu" class="custom-control-input" type="checkbox" value="tabu", id = 'tabu')
-                                    label(class="custom-control-label" for = 'tabu') Tabu  
-                    div.container 
-                        div.row
+                            div(class="col my-1")
+                                fieldset
+                                    div.form-group
+                                        div(class="custom-control custom-radio custom-control-inline")
+                                            input(type="radio" id="hc" name="command" class="custom-control-input" checked="" value='hc')
+                                            label(class="custom-control-label" for="hc") Hill Climbing
+                                        div(class="custom-control custom-radio custom-control-inline")
+                                            input(type="radio" id="Tabu" name="command" class="custom-control-input" value='tabu')
+                                            label(class="custom-control-label" for="Tabu") Tabu
+                            div(class='w-100')
                             div.col-4() Regularization:
                             div.col()
-                                div(class = 'custom-control custom-checkbox mb-3') 
-                                    input(name="bic" class="custom-control-input" type="checkbox" value="bic", id = 'bic')
-                                    label(class="custom-control-label" for = 'bic') Bic  
-                            div.col()
-                                div(class = 'custom-control custom-checkbox') 
-                                    input(name="aic" class="custom-control-input" type="checkbox" value="aic", id = 'aic')
-                                    label(class="custom-control-label" for = 'aic') Aic  
-                    
-                    div.container 
-                        div.row
+                                fieldset
+                                    div.form-group
+                                        div(class = 'custom-control custom-checkbox  custom-control-inline mb-3') 
+                                            input(name="bic" class="custom-control-input" type="checkbox" value="bic", id = 'bic' checked='')
+                                            label(class="custom-control-label" for = 'bic') Bic  
+                                        div(class = 'custom-control custom-checkbox custom-control-inline') 
+                                            input(name="aic" class="custom-control-input" type="checkbox" value="aic", id = 'aic' checked='')
+                                            label(class="custom-control-label" for = 'aic') Aic  
+                            div(class='w-100')
                             div.col-4() Estimate error rate:
-                            div.col()
-                                
-                                div(class = 'custom-control custom-checkbox mb-3') 
-                                    input(name="boot" class="custom-control-input" type="checkbox" value="boot", id = 'boot')
-                                    label(class="custom-control-label" for = 'boot') Yes  
-                            div.col()
-                                div(class = 'custom-control custom-checkbox') 
-                                    input(name="aic" class="custom-control-input" type="checkbox" value="no_boot", id = 'no_boot')
-                                    label(class="custom-control-label" for = 'no_boot') No
-                    button(type='submit', class ='btn btn-primary btn-lg', id = 'btn_sub', data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing Order") Submit
-            form(method='POST' action = 'files_loaded/caprese' enctype="multipart/form-data")          
+                            div(class="col my-1")
+                                fieldset
+                                    div.form-group
+                                        div(class="custom-control custom-radio custom-control-inline")
+                                            input(type="radio" id="y_err" name="err_rate_capri" class="custom-control-input" checked="" value='yes')
+                                            label(class="custom-control-label" for="hc") Yes
+                                        div(class="custom-control custom-radio custom-control-inline")
+                                            input(type="radio" id="no_err" name="err_rate_capri" class="custom-control-input" value='no')
+                                            label(class="custom-control-label" for="err_rate_capri") No
+                    div.container(style = 'display: flex; justify-content: center; align-items: center;')
+                        button.btn(type='submit', style = 'background-color: #234a56; color: white' name='capri_submit' value='capri') Submit
+                      
 
                 hr(style = 'border-color: white')
                 div.container(style = 'display: flex; justify-content: center; align-items: center;')
@@ -93,6 +102,7 @@ block content
                                 div(class = 'custom-control custom-checkbox') 
                                     input(name="aic" class="custom-control-input" type="checkbox" value="no_boot", id = 'no_boot')
                                     label(class="custom-control-label" for = 'no_boot') No
-                button(type='submit', class ='btn btn-primary btn-lg', id = 'btn_sub', data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing Order") Submit
+                    div.container(style = 'display: flex; justify-content: center; align-items: center;')
+                        button.btn(type='submit', style = 'background-color: #234a56; color: white' name='caprese_submit' value='caprese') Submit
                         
                 div(id = 'waiting_area')

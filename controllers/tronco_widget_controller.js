@@ -27,7 +27,8 @@ exports.show_options_post = function(req, res, next) {
         title = fields.inputName
         study_dir = __dirname + '/widget_data/' + req.session.email + '/' + title
         if (fs.existsSync(study_dir)) {
-            res.render('study_name', {error: 'Error: a study with the same name already exists'})
+            res.render('study_name', 
+                    {error: 'Error: a study with the same name already exists'})
             return;
         }
         req.session.title = title
@@ -164,53 +165,11 @@ exports.tronco_widget_post = function(req, res, next) {
     
 }
 
-exports.files_loaded_get = function(req, res, next) {
-    res.render('widget_reconstruction')
-}
 
-exports.files_loaded_capri_post = function(req, res, next) {
-    var session_dir = ''
-    if (req.session.email) {
-        session_dir =  __dirname + '/widget_data/' + req.session.email + '/' + req.session.title
-        session_dir = session_dir.replace(/\\/g, '/')
-        var form = new formidable.IncomingForm({keepExtensions : true});
-        // TODO: add errors
-        form.parse(req, (err, fields, files) => {
-            var command = ''
-            if (fields.hc)
-                command = 'hc'
-            else if (fields.tabu)
-                command = 'tabu'
-            var input = req.session.to_reconstruct
-            res.send(input)
-            
-        })
-
-    } else {
-        console.log('errore')
-    }
-
-
-}
-
-exports.files_loaded_caprese_post = function(req, res, next) {
-    session_dir =  __dirname + '/widget_data/' + 
-                    req.session.email + '/' + 
-                    req.session.title
-    session_dir = session_dir.replace(/\\/g, '/')
-    
-    var input = req.session.to_reconstruct
-    var script = __dirname + '/picnic_reconstruct.R'
-
-    const result = rscript.callSync(script, {method : 'caprese',
-                                            model : session_dir + '/' + input,
-                                            directory : session_dir})
-    console.log(result)
-    res.send(input)
-}
 
 exports.select_clusters_get = function(req, res, next) {
-    res.render('cluster_selection', {columns : req.session.columns})
+    res.render('cluster_selection', 
+                {columns : req.session.columns})
 }
 
 exports.select_clusters_post = function(req, res, next) {
@@ -244,9 +203,183 @@ exports.select_clusters_post = function(req, res, next) {
                                         reconstruction_dir : session_dir,
                                         separator : req.session.cluster_separator})
         
-
+        if (result.result === 'no_errors') {
+            res.redirect('/tronco/files_loaded')
+        } else {
+            res.send('Errors')
+        }
         console.log(result)
     })
-    
+}
 
+
+exports.files_loaded_get = function(req, res, next) {
+    var dir = __dirname + '/widget_data/' + req.session.email + '/' + req.session.title
+    var clusters = []
+    fs.readdir(dir, function(err, files) {
+        files.forEach(function(file, index) {
+            if (!(['MAF.RData', 'MAF.GISTIC.RData', 'MAF.GISTIC.BOOLEAN.RData', 'uploads'].includes(file))) {
+                const [fileName, fileExt] = file.split('.')
+                clusters.push(fileName)
+            }
+        })
+        res.render('widget_reconstruction',
+                    {clusters : clusters})
+    })
+    
+}
+
+
+exports.files_loaded_caprese_post = function(req, res, next) {
+    session_dir =  __dirname + '/widget_data/' + 
+                    req.session.email + '/' + 
+                    req.session.title
+    session_dir = session_dir.replace(/\\/g, '/')
+    
+    // var input = req.session.to_reconstruct
+    var input = req.body.cluster_selection
+   
+    var script = __dirname + '/picnic_reconstruct.R'
+
+    const result = rscript.callSync(script, 
+                                    {method : 'caprese',
+                                    model : session_dir + '/' + input,
+                                    directory : session_dir})
+    console.log(result)
+    res.send(input)
+}
+
+
+exports.files_loaded_post = function(req, res, next) {
+    if (req.session.email) {
+        var session_dir = ''
+        var script = __dirname + '/picnic_reconstruct.R'
+        session_dir =  __dirname + '/widget_data/' + req.session.email + '/' + req.session.title
+        session_dir = session_dir.replace(/\\/g, '/')
+
+        result_dir = session_dir + '/results'
+
+        if (!fs.existsSync(result_dir)) {
+            fs.mkdirSync(result_dir)
+        }
+        var form = new formidable.IncomingForm({keepExtensions : true});
+        // TODO: add errors
+        form.parse(req, (err, fields, files) => {
+            if (fields.capri_submit) {
+                 //var input = req.session.to_reconstruct
+                console.log(fields.cluster_selection)
+                console.log(fields.bic)
+                console.log(fields.aic)
+                console.log(fields.err_rate_capri)
+                console.log(fields.command)
+                var bic = fields.bic ? fields.bic:''
+                var aic = fields.aic ? fields.aic:''
+                const result = rscript.callSync(script, {method : 'capri',
+                                            model : session_dir + '/' + fields.cluster_selection + '.RData',
+                                            directory : session_dir,
+                                            bic : bic,
+                                            aic : aic,
+                                            command : fields.command,
+                                            bootstrap : fields.err_rate_capri,
+                                            name : fields.cluster_selection,
+                                            result_dir : result_dir})
+                console.log(result)
+                if (result.result == 'no_errors') {
+                    res.redirect('/tronco/tronco_plot')
+                } else
+                    res.send('Errors')
+                
+            } else if (fields.caprese_submit) {
+                const result = rscript.callSync(script, {method : 'caprese',
+                                                model : session_dir + '/' + fields.cluster_selection,
+                                                directory : session_dir})
+                console.log(result)
+            }
+        })
+    } else {
+        console.log('errore')
+    }
+}
+
+exports.tronco_plot_get = function(req, res, next) {
+    result_dir =  __dirname + '/widget_data/' + req.session.email + '/' + req.session.title + '/results'
+    result_dir = result_dir.replace(/\\/g, '/')
+    
+    var models_ready = []
+    fs.readdir(result_dir, function(err, files) {
+        files.forEach(function(file, index) {
+            console.log('!!!!!' + file)
+            models_ready.push(file)
+        })
+        res.render('construction_successful',
+            {models : models_ready})
+    })
+}
+
+
+exports.tronco_plot_post = function(req, res, next) {
+    var form = new formidable.IncomingForm()
+    form.parse(req, (err, fields, files) => {
+        console.log(fields.hg)
+        console.log(fields.tp)
+        console.log(fields.pr)
+        console.log(fields.pf)
+        console.log(fields.disconnected)
+        var current_directory = __dirname
+        current_directory = current_directory.replace(/\\/g, "/")
+        // Create an array with the eventual error messages
+        var err = [];
+        // Get the confidence values set by the user
+        var c_hg = ''
+        var c_tp = ''
+        var c_pr = ''
+        if (fields.hg) {
+            c_hg = 'hg'
+        }
+        if (fields.tp) {
+            c_tp = 'tp'
+        }
+        if (fields.pr) {
+            c_pr = 'pr'
+        }
+
+        var pf = false
+        if (fields.pf != undefined) {
+            pf = true
+        }
+        session_dir = __dirname + '/widget_data/' + req.session.email + '/' + req.session.title
+        session_dir = session_dir.replace(/\\/g, '/')
+        result_dir =  session_dir + '/results'
+        
+        plots_dir = session_dir + '/plots'
+        if (!fs.existsSync(plots_dir)) {
+            fs.mkdirSync(plots_dir)
+        }
+        var [name, ext] = fields.cluster_selection.split('.')
+        var path = result_dir + '/' + fields.cluster_selection 
+        var script = current_directory + "/test.R"
+        console.log(path)
+        console.log(name)
+        console.log(c_hg)
+        console.log(c_tp)
+        console.log(c_pr)
+        console.log(plots_dir)
+        console.log(pf)
+        console.log(req.session.id)
+        const result = rscript.callSync(script, {modelPath : path,
+                                                modelName: name, 
+                                                hg: c_hg, tp: c_tp, 
+                                                pr : c_pr, 
+                                                output_dir : plots_dir,
+                                                pf : pf,
+                                                sess_id : req.session.id});
+        console.log(result)
+        console.log(result.result)
+        fs.readFile(result.result, 'utf8', function(error, data) {
+            req.session.graph = data
+            fs.unlink(result.result)
+            res.render('tronco_visualization', {content : req.session.graph})
+        });
+
+    })
 }

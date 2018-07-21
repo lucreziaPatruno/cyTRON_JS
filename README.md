@@ -12,6 +12,6 @@ This application has been developed using NodeJS. In order to run it it is neces
 * Clone this repository in a folder in your local machine
 * Open the command prompt and cd into the folder
 * Type the following: `npm start`
-* Open the browser and navigate to "http://localhost:3000/". 
+* Open the browser and navigate to http://localhost:3000/. 
 
 Note: no additional R package is necessary, any missing package will be automatically installed on the application's first run.

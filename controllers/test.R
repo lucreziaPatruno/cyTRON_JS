@@ -18,26 +18,16 @@ hg = json$hg
 tp = json$tp
 pr = json$pr
 
-capri_bic = json$capri_bic
-capri_aic = json$capri_aic
-caprese = json$caprese
-
 conf = c(hg, tp, pr)
 conf = conf[conf != '']
 model = load(json$modelPath)
 
-mod = c(capri_bic, capri_aic, caprese)
-mod = mod[mod != '']
-if (length(mod) == 0) {
-    mod = names(get(model)$model)
-}
-
 prima_facie = json$pf
 
 session = json$sess_id
-outputFile =  paste(output, '/', modelName, session, '.graphml', sep = '', pf = prima_facie)
+outputFile =  paste(output, '/', modelName, session, '.graphml', sep = '')
 
-export.graphml(get(model), outputFile, confidence = conf, scale.nodes = 0.6, models = mod, pf = prima_facie)
+export.graphml(get(model), file = outputFile, confidence = conf, scale.nodes = 0.6, pf = prima_facie)
 # print(args);
 # print(json);
 # print(args[1]);

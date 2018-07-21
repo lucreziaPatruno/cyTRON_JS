@@ -8,13 +8,36 @@ library(rjson)
 # Retrieve the arguments
 args <- commandArgs(trailingOnly = TRUE)
 json <- fromJSON(args)
-
-input = load(json
-$model)
-model_caprese = tronco.caprese(input)
+method = json$method
+input = load(json$model)
 dir = json$directory
+name = json$name
+bic = json$bic
+aic = json$aic
+comm = json$command
+bootstrap = json$bootstrap
+result_dir = json$result_dir
 
-save(model_caprese, file = paste0(dir, '/model_caprese.Rdata'))
+if (bootstrap == 'yes') bootstrap = TRUE else bootstrap = FALSE
+reg = c(bic, aic)
+reg = reg[reg != '']
+if (length(reg) == 0) {
+    reg = c('bic', 'aic')
+}
+if (method == 'capri') {
+    model_capri = tronco.capri(get(input), command = comm, regularization = reg, do.boot = bootstrap)
+    save(model_capri, file = paste0(result_dir, '/', name, '_capri.Rdata'))
+    
+}
+if (method == 'caprese') {
+    model_caprese = tronco.caprese(get(input))
+    save(model_capri, file = paste0(result_dir, '/caprese_', name, '_caprese.Rdata'))
+}
 
-output <- list(result = 'no_errors'))
+# model_caprese = tronco.caprese(get(input))
+
+
+
+
+output <- list(result = 'no_errors')
 print(toJSON(output));

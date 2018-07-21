@@ -88,7 +88,7 @@ if (MAF.file != '') {
         MAF = annotate.stages(MAF, clinical.data)
     }
 
-    save(MAF, file = paste0(user_directory, '/MAF.Rdata'))
+    save(MAF, file = paste0(user_directory, '/MAF.RData'))
     inputs[1] = 'MAF'
 }
 
@@ -114,7 +114,7 @@ if (GISTIC.file != '') {
         GISTIC = annotate.stages(GISTIC, clinical.data)
     }
 
-    save(GISTIC, file = paste0(user_directory, '/GISTIC.Rdata')) 
+    save(GISTIC, file = paste0(user_directory, '/GISTIC.RData')) 
     inputs[2] = 'GISTIC'
 
     if (!is.na(MAF)) {
@@ -128,7 +128,7 @@ if (GISTIC.file != '') {
 
         MAF.GISTIC = annotate.description(x = MAF.GISTIC,
                                 label = "MAF/CNA data for driver genes")
-        save(MAF.GISTIC, file = paste0(user_directory, '/MAF.GISTIC.Rdata'))
+        save(MAF.GISTIC, file = paste0(user_directory, '/MAF.GISTIC.RData'))
     }
 }
 if (BOOLEAN.file != '') {
@@ -137,19 +137,19 @@ if (BOOLEAN.file != '') {
     BOOLEAN = import.genotypes(boolean.table, event.type= custom_event, color='darkorange2')
     BOOLEAN = TCGA.shorten.barcodes(BOOLEAN)
     BOOLEAN = annotate.description(x = BOOLEAN, label = paste0(custom_event, 'data'))
-    save(BOOLEAN, file = paste0(user_directory, '/BOOLEAN.Rdata'))
+    save(BOOLEAN, file = paste0(user_directory, '/BOOLEAN.RData'))
     inputs[3] = 'BOOLEAN'
     if (!is.na(MAF.GISTIC)) {
         MAF.GISTIC.BOOLEAN = intersect.datasets(MAF.GISTIC, BOOLEAN, intersect.genomes = FALSE)
-        save(MAF.GISTIC.BOOLEAN, file = paste0(user_directory, '/MAF.GISTIC.BOOLEAN.Rdata'))
+        save(MAF.GISTIC.BOOLEAN, file = paste0(user_directory, '/MAF.GISTIC.BOOLEAN.RData'))
     }
     else if (!is.na(MAF)) {
         MAF.BOOLEAN = intersect.datasets(MAF, BOOLEAN, instersect.genomes = FALSE)
-        save(MAF.BOOLEAN, file = paste0(user_directory, '/MAF.BOOLEAN.Rdata'))
+        save(MAF.BOOLEAN, file = paste0(user_directory, '/MAF.BOOLEAN.RData'))
     }
     else if (!is.na(GISTIC)) {
         GISTIC.BOOLEAN = instersect.datasets(GISTIC, BOOLEAN, instersect.genomes = FALSE)
-        save(GISTIC.BOOLEAN, file = paste0(user_directory, '/GISTIC.BOOLEAN.Rdata'))
+        save(GISTIC.BOOLEAN, file = paste0(user_directory, '/GISTIC.BOOLEAN.RData'))
     } 
         
 

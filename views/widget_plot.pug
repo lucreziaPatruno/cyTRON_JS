@@ -1,0 +1,42 @@
+extends layout
+
+block custom_css
+    link(href = "/stylesheets/widget.css", rel = "stylesheet", type = "text/css")
+
+block content
+    div(class = 'container main_div col-8 py-3', style='color: white')
+            h2(style = 'color:white') Select parameters for the model plot
+            hr(style='border-color:white')
+            form(method='POST' action = '' enctype="multipart/form-data")
+                div(class="form-group")
+                    div(class='row')
+                        div(class='col my-1')
+                            label(for="freq_selection" class="col-form-label") Insert minimum frequency:
+                        div(class="col my-1")
+                            fieldset
+                                div.form-group
+                                    div(class = 'custom-control custom-checkbox  custom-control-inline mb-3') 
+                                        input(name="hg" class="custom-control-input" type="checkbox" value="hg", id = 'hg' checked='')
+                                        label(class="custom-control-label" for = 'hg') Hg  
+                                    div(class = 'custom-control custom-checkbox custom-control-inline') 
+                                        input(name="tp" class="custom-control-input" type="checkbox" value="tp", id = 'tp' checked='')
+                                        label(class="custom-control-label" for = 'tp') Tp  
+                                    div(class = 'custom-control custom-checkbox custom-control-inline') 
+                                        input(name="tp" class="custom-control-input" type="checkbox" value="pr", id = 'pr' checked='')
+                                        label(class="custom-control-label" for = 'pr') Pr 
+                    div.row
+                        div.form-group
+                            div(class = 'custom-control custom-checkbox  custom-control-inline mb-3') 
+                                input(name="hg" class="custom-control-input" type="checkbox" value="pf", id = 'pf')
+                                label(class="custom-control-label" for = 'pf') Print Prima facie  
+                    div.row
+                        div.form-group
+                            div(class = 'custom-control custom-checkbox  custom-control-inline mb-3') 
+                                input(name="hg" class="custom-control-input" type="checkbox" value="disconnected", id = 'disconnected')
+                                label(class="custom-control-label" for = 'disconnected') Print Prima facie  
+                       
+
+                div.container(style = 'display: flex; justify-content: center; align-items: center;')
+                    button.btn(type='submit', style = 'background-color: #234a56; color: white ') Submit
+
+    

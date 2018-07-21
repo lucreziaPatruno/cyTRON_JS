@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var welcome_controller = require('../controllers/welcome_controller');
-var tronco_controller = require('../controllers/tronco_controller');
+var tronco_controller = require('../controllers/tronco_plot_controller');
 var widget = require('../controllers/tronco_widget_controller')
 // GET catalog home page.
 router.get('/', welcome_controller.index);
