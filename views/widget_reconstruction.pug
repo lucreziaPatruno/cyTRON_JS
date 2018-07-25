@@ -10,8 +10,18 @@ block scripts
 block content
     div(class = 'container' style='padding-top: 50px')
         div(class = 'container col-7 py-2 main_div', style = 'color:white')
+            
             h2(class = 'display-6', style = 'color: white') Data successfully loaded
+            if errors
+                div(class='container', style='border:solid white')
+                    if errors.length == 1
+                        h6(style='color:white') Attention: no samples found for cluster: 
+                    else
+                        h6(style='color:white') Attention: no samples found for clusters: 
+                    each e in errors
+                        | #{e}
             | Choose which function to use for the reconstruction
+            
             form(method='POST' action = 'files_loaded/reconstruction' enctype="multipart/form-data")
                 div.row
                     div(class='col my-1')
@@ -59,6 +69,13 @@ block content
                                         div(class="custom-control custom-radio custom-control-inline")
                                             input(type="radio" id="no_err" name="err_rate_capri" class="custom-control-input" value='no')
                                             label(class="custom-control-label" for="err_rate_capri") No
+                            div(class='w-100')
+                            div(class='col-4 py-2') Insert mutex file:
+                            div(class="col my-1")
+                                div(class="input-group mb-3")
+                                    div(class="custom-file")
+                                        input(class="custom-file-input" name="MUTEXinput" type="file")
+                                        label(class="custom-file-label" for="MUTEXinput") Choose file 
                     div.container(style = 'display: flex; justify-content: center; align-items: center;')
                         button.btn(type='submit', style = 'background-color: #234a56; color: white' name='capri_submit' value='capri') Submit
                       

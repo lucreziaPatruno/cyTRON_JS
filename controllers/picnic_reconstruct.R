@@ -12,26 +12,40 @@ method = json$method
 input = load(json$model)
 dir = json$directory
 name = json$name
-bic = json$bic
-aic = json$aic
-comm = json$command
-bootstrap = json$bootstrap
+
 result_dir = json$result_dir
 
-if (bootstrap == 'yes') bootstrap = TRUE else bootstrap = FALSE
-reg = c(bic, aic)
-reg = reg[reg != '']
-if (length(reg) == 0) {
-    reg = c('bic', 'aic')
-}
 if (method == 'capri') {
-    model_capri = tronco.capri(get(input), command = comm, regularization = reg, do.boot = bootstrap)
+    bic = json$bic
+    aic = json$aic
+    comm = json$command
+    bootstrap = json$bootstrap
+    
+    if (bootstrap == 'yes') bootstrap = TRUE else bootstrap = FALSE
+    reg = c(bic, aic)
+    reg = reg[reg != '']
+    if (length(reg) == 0) {
+        reg = c('bic', 'aic')
+    }
+    mutex_path = json$mutex
+    input = get(input) 
+    if (mutex_path != '') {
+        mutex = import.mutex.groups(json$mutex)
+        for (w in mutex) {
+            input = hypothesis.add.group(input, 
+                                        FUN = OR,  # formula type is "soft exclusivity" (OR)
+                                        group = w, # the group
+                                        dim.min = length(w) # only 1 group has maximal length  
+                                        ) 
+        }
+    }
+    model_capri = tronco.capri(input, command = comm, regularization = reg, do.boot = bootstrap)
     save(model_capri, file = paste0(result_dir, '/', name, '_capri.Rdata'))
     
 }
 if (method == 'caprese') {
     model_caprese = tronco.caprese(get(input))
-    save(model_capri, file = paste0(result_dir, '/caprese_', name, '_caprese.Rdata'))
+    save(model_caprese, file = paste0(result_dir, '/', name, '_caprese.Rdata'))
 }
 
 # model_caprese = tronco.caprese(get(input))

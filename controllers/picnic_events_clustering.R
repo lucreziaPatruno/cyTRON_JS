@@ -35,21 +35,27 @@ tab = tab[order(tab[, cluster_column]), ]
 ### Define the maps to split samples -- these are our clustering
 ### assignment.
 gruppi = unique(tab[, cluster_column])
-groups = c()
+assign('errors', c(), env=globalenv())
 for (i in 1:length(gruppi)) {
   cluster_name = as.character(gruppi[i])
   current_group = tab[as.character(tab[,cluster_column]) == cluster_name, , drop = F]
   # Before assignment replace non-alphanumeric charaters with '_'
   cluster_name = gsub("[^[:alnum:]]", "_", cluster_name)
-  # groups = append(groups, list(current_group))
   # Get the samples included in this cluster
   samples = rownames(current_group)
-  subset = trim(samples.selection(get(x), samples))
-  subset = annotate.description(subset, paste(cluster_name, ' subtype'))
-  # Save cluster files
-  # N.B. Creare una cartella per i cluster
-  save(subset, file = paste0(reconstruction_dir, '/', cluster_name, '.RData'))
-}
+  tryCatch({ 
+    subset = trim(samples.selection(MAF.GISTIC, samples))
+    subset = annotate.description(subset, paste(cluster_name, ' subtype'))
+    # Save cluster files
+    # N.B. Creare una cartella per i cluster
+    save(subset, file = paste0(reconstruction_dir, '/', cluster_name, '.RData'))
+    
+  }, error = function(e) {assign('errors', append(errors, cluster_name), env = globalenv())}
+  )}
 
-output <- list(result = 'no_errors');
+if (length(errors) == 0) {
+  output <- list(result = 'no_errors');
+} else {
+   output <- list(result = 'clusters_not_found', clusters = errors)
+}
 print(toJSON(output));

@@ -4,22 +4,32 @@ block custom_css
     link(href = "/stylesheets/insert_email.css", rel = "stylesheet", type = "text/css")
 
 block content
-    div(class = 'container my-5 col-6 py-2', id = 'main_div', style = 'border-radius: 4px')
+    div.py-3(style = 'font-size: 60px; color:white;background:#03131f')
         div(class = 'container text-center')
+            h1.display-1(style = 'color: White') Welcome to cyTRON
+    div(class = 'container mt-2 col-4 py-2', id = 'main_div', style = 'border-radius: 4px')
+        div(class = 'container text-center')
+            h3(style = 'color: White') Access the TRONCO widget 
             
-                h1(style = 'color: White') Welcome to the TRONCO widget
-                h5(style = 'color: white') Access to generate a cancer-progression analysis
-        hr(style = 'border-color:#234a56')
-
+            hr(style = 'border-color:#234a56')
+    
         form(method='POST' action = '' enctype="multipart/form-data", class = 'form-signin')
-            div(class = 'container col-7 px-5')
-                div(class = 'container py-3', style = 'text-align:center')
+            div(class = 'container px-5')
+                div(class = 'container', style = 'text-align:center')
                     h4(style = 'color : white') Insert your e-mail
-            
+                    h5(style = 'color: white') to generate a cancer-progression analysis
                 div(class = 'form-group')
                     label(for="inputEmail" class="sr-only") Email address
                     input#inputEmail(type="email" name = 'inputEmail' style = 'border: solid 1px #234a56' class="form-control" placeholder="Email address" required autofocus)
             
-            div.container(style = 'display: flex; justify-content: center; align-items: center;')
-                button.btn(type='submit', style = 'background-color: #234a56; color: white ') Submit
+                div.container(style = 'display: flex; justify-content: center; align-items: center;')
+                    button.btn(type='submit', style = 'background-color: #234a56; color: white ') Submit
+        hr(style = 'border-color:#234a56')
+
+        div(class='container px-5')
+            div(class = 'container', style = 'text-align:center') 
+                h4(style = 'color : white') Access as guest to visualize an already constructed model
+                a(href='/welcome/visualization') Ciao
+        
+        
     

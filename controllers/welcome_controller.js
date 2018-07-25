@@ -5,9 +5,10 @@ var fs = require('fs');
 
 graphml( cytoscape, jquery ); // register extension
 
-exports.index = function(req, res) {
+exports.visualize_model = function(req, res) {
     //res.sendfile('../public/')
     //res.render('index', { title: 'cyTRON'});
     res.render('index')
+    // res.render('insert_email')
 
 }

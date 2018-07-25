@@ -27,3 +27,15 @@
     position: absolute;
     z-index: -1;
 }
+.cy_div::after {
+    content: "";
+    background-color: white;
+    border-radius: 2px;
+    opacity: 0.85;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+}

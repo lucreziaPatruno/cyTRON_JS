@@ -178,6 +178,7 @@ exports.select_clusters_post = function(req, res, next) {
                         req.session.title
     session_dir= session_dir.replace(/\\/g, '/')
     var form = new formidable.IncomingForm({keepExtensions : true});
+    req.session.clusters_not_found = ''
     // TODO: add errors
     form.parse(req, (err, fields, files) => {
         // Get the script to execute
@@ -202,13 +203,13 @@ exports.select_clusters_post = function(req, res, next) {
                                         cluster_path : cluster_file,
                                         reconstruction_dir : session_dir,
                                         separator : req.session.cluster_separator})
-        
+        console.log(result)
         if (result.result === 'no_errors') {
             res.redirect('/tronco/files_loaded')
         } else {
-            res.send('Errors')
+            req.session.clusters_not_found = result.clusters
+            res.redirect('/tronco/files_loaded')
         }
-        console.log(result)
     })
 }
 
@@ -218,38 +219,23 @@ exports.files_loaded_get = function(req, res, next) {
     var clusters = []
     fs.readdir(dir, function(err, files) {
         files.forEach(function(file, index) {
-            if (!(['MAF.RData', 'MAF.GISTIC.RData', 'MAF.GISTIC.BOOLEAN.RData', 'uploads'].includes(file))) {
+            if (!(['MAF.RData', 'MAF.GISTIC.RData', 'MAF.GISTIC.BOOLEAN.RData', 'GISTIC.RData', 'BOOLEAN.RData', 'uploads'].includes(file))) {
                 const [fileName, fileExt] = file.split('.')
                 clusters.push(fileName)
             }
         })
-        res.render('widget_reconstruction',
-                    {clusters : clusters})
+        console.log(req.session.clusters_not_found)
+        if (req.session.clusters_not_found) {
+            res.render('widget_reconstruction',
+                    {clusters : clusters, 
+                    errors : [req.session.clusters_not_found]})
+        } else {
+            res.render('widget_reconstruction',
+                        {clusters : clusters})
+        }
+        
     })
-    
 }
-
-
-exports.files_loaded_caprese_post = function(req, res, next) {
-    session_dir =  __dirname + '/widget_data/' + 
-                    req.session.email + '/' + 
-                    req.session.title
-    session_dir = session_dir.replace(/\\/g, '/')
-    
-    // var input = req.session.to_reconstruct
-    var input = req.body.cluster_selection
-   
-    var script = __dirname + '/picnic_reconstruct.R'
-
-    const result = rscript.callSync(script, 
-                                    {method : 'caprese',
-                                    model : session_dir + '/' + input,
-                                    directory : session_dir})
-    console.log(result)
-    res.send(input)
-}
-
-
 exports.files_loaded_post = function(req, res, next) {
     if (req.session.email) {
         var session_dir = ''
@@ -257,11 +243,12 @@ exports.files_loaded_post = function(req, res, next) {
         session_dir =  __dirname + '/widget_data/' + req.session.email + '/' + req.session.title
         session_dir = session_dir.replace(/\\/g, '/')
 
-        result_dir = session_dir + '/results'
+        var result_dir = session_dir + '/results'
 
         if (!fs.existsSync(result_dir)) {
             fs.mkdirSync(result_dir)
         }
+        var upload_dir = session_dir + '/uploads'
         var form = new formidable.IncomingForm({keepExtensions : true});
         // TODO: add errors
         form.parse(req, (err, fields, files) => {
@@ -274,6 +261,9 @@ exports.files_loaded_post = function(req, res, next) {
                 console.log(fields.command)
                 var bic = fields.bic ? fields.bic:''
                 var aic = fields.aic ? fields.aic:''
+                var mutex = files['MUTEXinput']
+                var mutex = mutex.name!='' ? mutex.path:''
+                console.log(mutex)
                 const result = rscript.callSync(script, {method : 'capri',
                                             model : session_dir + '/' + fields.cluster_selection + '.RData',
                                             directory : session_dir,
@@ -282,7 +272,8 @@ exports.files_loaded_post = function(req, res, next) {
                                             command : fields.command,
                                             bootstrap : fields.err_rate_capri,
                                             name : fields.cluster_selection,
-                                            result_dir : result_dir})
+                                            result_dir : result_dir,
+                                            mutex : mutex})
                 console.log(result)
                 if (result.result == 'no_errors') {
                     res.redirect('/tronco/tronco_plot')
@@ -291,10 +282,31 @@ exports.files_loaded_post = function(req, res, next) {
                 
             } else if (fields.caprese_submit) {
                 const result = rscript.callSync(script, {method : 'caprese',
-                                                model : session_dir + '/' + fields.cluster_selection,
-                                                directory : session_dir})
+                                                model : session_dir + '/' + fields.cluster_selection +'.RData',
+                                                directory : session_dir,
+                                                result_dir : result_dir,
+                                                name : fields.cluster_selection})
                 console.log(result)
+                if (result.result == 'no_errors') {
+                    res.redirect('/tronco/tronco_plot')
+                } else
+                    res.send('Errors')
             }
+        })
+        form.on('fileBegin', function (name, file) {
+            if (file.name != '') {
+                const [fileName, fileExt] = file.name.split('.')
+                //fs.rename(file.path, )
+                file.path = upload_dir + '/' + file.name
+            }
+            
+        })
+    
+        form.on('file', function (name, file) {
+            if (file.name != '') {
+                console.log('file caricato: ' + file.name)
+            }
+            
         })
     } else {
         console.log('errore')
