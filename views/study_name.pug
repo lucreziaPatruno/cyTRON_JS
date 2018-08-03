@@ -18,9 +18,10 @@ block content
         if error 
             ul
                 li!= error
-        hr(style = 'border-color: white')
+        
         div(class = 'container', style='color:white')
             if graphs
+                hr(style = 'border-color: white')
                 | OR
                 form(method='POST' action = 'visualize_constructed' enctype="multipart/form-data", class = 'form-signin')
                     div.row

@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
+
+    document.getElementById('helpIcon').addEventListener('click', function() {
+        document.getElementById('info_div').style.display = 'block'
+    })
     
     document.getElementById('MAFinput').disabled = true
     document.getElementById('file_maf').style.opacity = 0.7

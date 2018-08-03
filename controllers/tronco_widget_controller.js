@@ -38,40 +38,44 @@ exports.show_options_get = function(req, res, next) {
         var graphs_array = []
         // Get all the models and graphml files previously constructed by a user:
         // for each analysis get models and graphs
-        files = fs.readdirSync(session_dir) 
-        files.forEach(function(file, index) {
-            var model_dir = session_dir + '/' + file + '/results'
-            console.log(model_dir)
-            if (fs.existsSync(model_dir)) {
-                models = fs.readdirSync(model_dir)
-                models.forEach(function(file_model, index) {
-                    console.log(file_model)
-                    console.log('FILE: ' + file)
-                    var name = file_model.split('.')
-                    name.pop()
-                    name = name.join('.')
-                    models_array.push([file, name])
-                })
-            }
-            var graphs_dir = session_dir + '/' + file + '/plots'
-            if (fs.existsSync(graphs_dir)) {
-                graphs = fs.readdirSync(graphs_dir)
-                graphs.forEach(function(file_graph, index) {
-                    console.log(file_graph)
-                    console.log('FILE: ' + file)
-                    var name = file_graph.split('.')
-                    name.pop()
-                    name = name.join('.')
-                    graphs_array.push([file, name])
-                })
-            }
-            
-            
-        })
-        options['models'] = models_array
-        options['graphs'] = graphs_array
-        console.log(options)
-        res.render('study_name', options)
+        if (fs.existsSync(session_dir)) {
+            files = fs.readdirSync(session_dir) 
+            files.forEach(function(file, index) {
+                var model_dir = session_dir + '/' + file + '/results'
+                console.log(model_dir)
+                if (fs.existsSync(model_dir)) {
+                    models = fs.readdirSync(model_dir)
+                    models.forEach(function(file_model, index) {
+                        console.log(file_model)
+                        console.log('FILE: ' + file)
+                        var name = file_model.split('.')
+                        name.pop()
+                        name = name.join('.')
+                        models_array.push([file, name])
+                    })
+                }
+                var graphs_dir = session_dir + '/' + file + '/plots'
+                if (fs.existsSync(graphs_dir)) {
+                    graphs = fs.readdirSync(graphs_dir)
+                    graphs.forEach(function(file_graph, index) {
+                        console.log(file_graph)
+                        console.log('FILE: ' + file)
+                        var name = file_graph.split('.')
+                        name.pop()
+                        name = name.join('.')
+                        graphs_array.push([file, name])
+                    })
+                }
+                
+                
+            })
+            options['models'] = models_array
+            options['graphs'] = graphs_array
+            console.log(options)
+            res.render('study_name', options)
+        } else {
+            res.render('study_name')
+        }
     } else {
         // The session expired -> display home page
         res.redirect('/welcome')

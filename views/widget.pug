@@ -8,7 +8,7 @@ block content
     div(class = 'container' style='padding-top: 20px')
         
         form(method='POST' action = '' enctype="multipart/form-data")
-            div(class = 'container col-10 py-2 main_div my-2', style = 'color:white')
+            div(class = 'container col-10 py-2 main_div my-2', style = 'color:white; position:relative')
                 
                 div(id="myCarousel" class='carousel slide' data-ride='carousel' data-interval="false")
                     ol(class = 'carousel-indicators')
@@ -39,7 +39,24 @@ block content
                                             label(class="custom-file-label" for="MAFinput", id='MAFlabel') Choose file
                                     h3(id="helpIcon" data-toggle="modal" data-target="#myModal") &nbsp;&nbsp;&nbsp; 
                                         span(class="glyphicon glyphicon-question-sign")
-
+                                    div.container(id = 'info_div' style='background:white; color:black;position:absolute; display:none; z-index:10') Input information
+                                        table.table(id='table_edges')
+                                            tbody
+                                                tr(id='maf_row')
+                                                    th(scope='row') MAF
+                                                    td Mutation Annotation Format (MAF) is a tab-delimited text file with aggregated mutation information from VCF Files and are generated on a project-level
+                                                    td #[a(href='https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/') NIH documentation link]
+                                                tr(id='gistic_row' )
+                                                    th(scope='row') GISTIC
+                                                    td(id='hg_value')  GISTIC format is a tab-delimited text file that defines a feature track displaying the q-value for regions of amplification or deletion found using GISTIC (Beroukhim et al., 2007). The first row contains eight column headings, which must be identical to those listed in the following table. Each subsequent row defines a GISTIC feature.
+                                                    td #[a(href='https://software.broadinstitute.org/software/igv/GISTIC') IGV documentation link]
+                                                tr(id='tp_row' style='display:none')
+                                                    th(scope='row') BOOLEAN
+                                                    td(id='tp_value') A custom boolean table, where each cell indicates the presence of the corresponding mutation in the corresponding sample
+                                                    td ciao
+                                                tr(id='pr_row' style='display:none')
+                                                    th(scope='row') pr
+                                                    td(id='pr_value') 
                                 div(class='form-group vert')
                                     div.container
                                         label(for="maf_separator_selection" class= "col-form-label") Select file separator:
