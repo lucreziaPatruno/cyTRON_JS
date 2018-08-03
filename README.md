@@ -11,6 +11,7 @@ This application has been developed using NodeJS. In order to run it it is neces
 
 * Clone this repository in a folder in your local machine
 * Open the command prompt and cd into the folder
+* Run the command `npm install`
 * Type the following: `npm start`
 * For the time being, open the browser and navigate to http://localhost:3000/. 
 
