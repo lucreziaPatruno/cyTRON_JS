@@ -1,6 +1,6 @@
 loadgraphml = function(graphstr) {
     // A new model has been chosen, so all the information about the previous one need to be deleted:
-    //document.getElementById('confidenceValues').innerHTML = 'Graph information will be displayed here'
+    document.getElementById('confidenceValues').innerHTML = 'Graph information will be displayed here'
 
     var cy = cytoscape({
         container: document.getElementById('cy'),
@@ -47,9 +47,8 @@ loadgraphml = function(graphstr) {
                         }
                             
                     },
-
                     'target-arrow-fill' : 'filled',
-                    'labelFontColor' : function(ele) {
+                    'color' : function(ele) {
                         if (ele.data('e_labelcolor') != undefined) {
                             return ele.data('e_labelcolor')
                         } else
@@ -73,7 +72,16 @@ loadgraphml = function(graphstr) {
     cy.graphml(graphstr);
     cy.layout(options).run();
     cy.panzoom({});
-    //document.getElementById('confidenceValues').style.visibility = 'visible'
+    var ur = cy.undoRedo(options);
+    document.getElementById('confidenceValues').style.visibility = 'visible'
+    var reset_button = document.getElementById('reset_button')
+    reset_button.style.visibility = 'visible'
+    reset_button.addEventListener("click", function(evt) {
+        cy.layout(options).run()
+        //cy.reset()
+        //cy.zoom(0.8)
+        //ur.undoAll()
+    });
     cy.on("tap", "node", function(evt) {
         console.log('node click')
         var logic = ['OR', 'AND', 'XOR']
@@ -81,16 +89,92 @@ loadgraphml = function(graphstr) {
         name = node.data("v_name")
         //console.log( 'tapped ' + node.data("v_name") );
         if (logic.includes(name)) {
-            document.getElementById('confidenceValues').innerHTML = 'This is a logic node representing a ' + name
-        } else 
-            window.open("https://www.ncbi.nlm.nih.gov/gene?term=("+node.data("v_name")+"[gene])%20AND%20(Homo%20sapiens[orgn])");
-    })
+            document.getElementById('confidenceValues').innerHTML = 
+            'This is a logic node representing a ' + name
+        } else {
+            /*var request = new XMLHttpRequest();
+            var url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=gene&term=(' +
+            node.data("v_name") + '%5Bgene%5D)+AND+(Homo+sapiens%5Borgn%5D)+AND+(alive%5Bprop%5D)+NOT+(newentry%5Bgene%5D)'
+    
+            request.open('GET', url);
+            request.responseType = 'text';
+
+            function convert_string_to_xml(to_convert) {
+                
+                //eSearchResult
+                if (window.DOMParser) {
+                    parser = new DOMParser();
+                    to_convert = parser.parseFromString(to_convert, "text/xml");
+                } else // Internet Explorer
+                {
+                    to_convert = new ActiveXObject("Microsoft.XMLDOM");
+                    to_convert.async = false;
+                    to_convert.loadXML(txt);
+                }
+                return to_convert
+            }
+
+            request.onload = function() {
+                xmlDoc = convert_string_to_xml(request.response)
+                /*if (window.DOMParser) {
+                    parser = new DOMParser();
+                    xmlDoc = parser.parseFromString(request.response, "text/xml");
+                } else // Internet Explorer
+                {
+                    xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+                    xmlDoc.async = false;
+                    xmlDoc.loadXML(txt);
+                }
+                //if (xmlDoc.getElementsByTagName("eSearchResult")) {
+                    // This is the first query to get the gene ID
+                    var gene_id = xmlDoc.getElementsByTagName("Id")[0].childNodes[0].nodeValue
+                    console.log(gene_id)
+                    var url_fetch = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=gene&id=' +
+                    gene_id + '&retmode=xml'
+                    var request_fetch = new XMLHttpRequest();
+                    request_fetch.open('GET', url_fetch);
+                    request_fetch.responseType = 'text';
+                    request_fetch.onload = function() {
+                        /*if (window.DOMParser) {
+                            parser = new DOMParser();
+                            xml_fetch = parser.parseFromString(request_fetch.response, "text/xml");
+                        } else // Internet Explorer
+                        {
+                            xml_fetch = new ActiveXObject("Microsoft.XMLDOM");
+                            xml_fetch.async = false;
+                            xml_fetch.loadXML(txt);
+                        }
+                        var xml_fetch = convert_string_to_xml(request_fetch.response)
+                        console.log(xml_fetch.getElementsByTagName("Gene-commentary"))
+                        //console.log(xml_fetch.getElementsByTagName("Translation")[0].childNodes[1].nodeValue)
+                    }
+                    request_fetch.send()
+                };
+
+            request.send();
+    }*/
+            window.open("https://www.ncbi.nlm.nih.gov/gene?term=("+ 
+            node.data("v_name")+"[gene])%20AND%20(Homo%20sapiens[orgn])");
+        }
+        })
 
     cy.on("tap", "edge", function(evt) {
+        document.getElementById('confidenceValues').innerHTML = ''
         var edge = evt.target
         var hg = edge.data("e_hg")
         if (hg != undefined) {
-            document.getElementById('confidenceValues').innerHTML = 'hg: ' + hg
+            document.getElementById('confidenceValues').innerHTML += 
+                'hg: ' + hg + '\n'
+        } 
+        var tp = edge.data('e_tp')
+        if (tp){
+            document.getElementById('confidenceValues').innerHTML += 
+            '\ntp: ' + tp + '\n'
+        }
+        var pr = edge.data('e_pr')
+        if (pr) {
+            document.getElementById('confidenceValues').innerHTML +=
+            '\npr: ' + pr + '\n'
         }
     })
 
@@ -101,10 +185,11 @@ document.addEventListener("DOMContentLoaded", function() {
     if (document.getElementById("graphstr") != null) {
         // Visualize the result of the TRONCO computation just finished
         var graphstr = document.getElementById("graphstr").textContent;
-        graphstr = graphstr.replace(/<data /g, "<data type = \"data\" ");
+        graphstr = graphstr.replace(/<data /g,
+            "<data type = \"data\" ");
         loadgraphml(graphstr)
 
-    } else {
+    } //else {
     function handleFileSelect(evt) {
         var files        
         if(evt.type === 'drop') {
@@ -144,12 +229,13 @@ document.addEventListener("DOMContentLoaded", function() {
         evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
     }
     
-    document.getElementById('files').addEventListener('change', handleFileSelect, false);
+    document.getElementById('files').addEventListener('change', 
+        handleFileSelect, false);
 
-    //var dropZone = document.getElementById('drop_zone');
-    //dropZone.addEventListener('dragover', handleDragOver, false);
-    //dropZone.addEventListener('drop', handleFileSelect, false);
-    }
+    var dropZone = document.getElementById('drop_zone');
+    dropZone.addEventListener('dragover', handleDragOver, false);
+    dropZone.addEventListener('drop', handleFileSelect, false);
+    //}
 
 });
 

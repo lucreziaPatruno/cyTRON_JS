@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var bic = document.getElementById('bic')
+    /*var bic = document.getElementById('bic')
     var aic = document.getElementById('aic')
 
     // var hc = document.getElementById('hc').checked = "true"
@@ -15,5 +15,39 @@ document.addEventListener("DOMContentLoaded", function() {
             bic.checked = "false"
         else
             bic.checked = "true"
+    })*/
+    
+    var select_cluster = document.getElementById('cluster_selection')
+    document.getElementById('capri_submit').disabled = true
+    document.getElementById('capri_submit_div').style.opacity = 0.7
+
+    document.getElementById('capri_parameters').disabled = true
+    document.getElementById('capri_parameters_div').style.opacity = 0.7
+    
+    document.getElementById('caprese_submit').disabled = true
+    document.getElementById('caprese_submit_div').style.opacity = 0.7
+    
+    select_cluster.addEventListener('change', function(){
+        if (select_cluster.value == '--Select cluster--') {
+            document.getElementById('capri_submit').disabled = true
+            document.getElementById('capri_submit_div').style.opacity = 0.7
+
+            document.getElementById('capri_parameters').disabled = true
+            document.getElementById('capri_parameters_div').style.opacity = 0.7
+            
+            document.getElementById('caprese_submit').disabled = true
+            document.getElementById('caprese_submit_div').style.opacity = 0.7
+
+        } else {
+            document.getElementById('capri_submit').disabled = false
+            document.getElementById('capri_submit_div').style.opacity = 1
+
+            document.getElementById('capri_parameters').disabled = false
+            document.getElementById('capri_parameters_div').style.opacity = 1
+            
+            document.getElementById('caprese_submit').disabled = false
+            document.getElementById('caprese_submit_div').style.opacity = 1
+        }
+
     })
 })

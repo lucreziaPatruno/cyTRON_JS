@@ -39,3 +39,14 @@
     position: absolute;
     z-index: -1;
 }
+
+#drop_zone {
+  height: auto;
+  background: whitesmoke;
+    border: dashed 1px;
+  color: rgb(82, 80, 80);
+  text-align: center;
+  height: 50px;
+  padding-top: 10px;
+  
+}

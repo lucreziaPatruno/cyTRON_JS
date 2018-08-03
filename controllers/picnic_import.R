@@ -155,11 +155,15 @@ if (BOOLEAN.file != '') {
 
 
 }
-# Now get the cluter file
-file = read.delim(clusters.file, sep = cluster_separator)
-
+if (clusters.file != '') {
+    # Now get the cluter file
+    file = read.delim(clusters.file, sep = cluster_separator)
+    col = colnames(file)
+} else {
+    col = ''
+}
 
 inputs = inputs[inputs != '']
 final_to_plot = paste(inputs, collapse = '.')
-output <- list(result = 'no_errors', to_plot = paste(final_to_plot, 'RData', sep = '.'), columns = colnames(file))
+output <- list(result = 'no_errors', to_plot = paste(final_to_plot, 'RData', sep = '.'), columns = col)
 print(toJSON(output));

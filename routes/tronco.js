@@ -16,9 +16,9 @@ router.get('/user_options', widget.show_options_get)
 
 router.post('/user_options', widget.show_options_post)
 
-router.get('/files_loaded', widget.files_loaded_get)
+router.get('/reconstruction', widget.files_loaded_get)
 
-router.post('/files_loaded/reconstruction', widget.files_loaded_post)
+router.post('/reconstruction', widget.files_loaded_post)
 
 // router.post('/files_loaded/caprese', widget.files_loaded_caprese_post)
 

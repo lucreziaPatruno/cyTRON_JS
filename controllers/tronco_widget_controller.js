@@ -2,6 +2,7 @@ var path = require('path');
 var formidable = require('formidable')
 const rscript = require('js-call-r');
 var fs = require('fs')
+var request_module = require('request')
 
 exports.start_widget_get = function(req, res, next) {
     res.render('insert_email')
@@ -41,8 +42,8 @@ exports.tronco_widget_get = function(req, res, next) {
     current_directory = current_directory.replace(/\\/g, "/")
     var script = current_directory + '/load_packages_picnic.R'
     const result = rscript.callSync(script, 
-                                    {working_directory : current_directory})
-    console.log('questa è la get')
+                                    {working_directory : current_directory}) //(err, result) => {res.render('widget')})
+    //console.log('questa è la get')
     res.render('widget')
 };
 
@@ -73,28 +74,28 @@ exports.tronco_widget_post = function(req, res, next) {
         current_directory = current_directory.replace(/\\/g, "/")
         // Get the MAF input file uploaded by the user
         var maf = files['MAFinput']
-        if (maf.name != '') {
+        if (fields.MAF && maf.name != '') {
             maf_p = maf.path.replace(/\\/g, '/')
         } else {
             maf_p = ''
         }
         // Get the GISTIC input file uploaded by the user
-        var gistic = files['GISTICinput']
-        if (gistic.name != '') {
-            gistic_p = gistic.path.replace(/\\/g, '/')
+        var gistic_file = files['GISTICinput']
+        if (fields.gistic && gistic_file.name != '') {
+            gistic_p = gistic_file.path.replace(/\\/g, '/')
         } else {
             gistic_p = ''
         }
         // get the gene list file uploaded by the user
         var interest = files['INTERESTinput']
-        if (interest.name != '') {
+        if (fields.interest && interest.name != '') {
             interest_path = interest.path.replace(/\\/g, '/')
         } else {
             interest_path = ''
         }
         // Get custom boolean user input
         var bool_input = files['BOOLEANinput']
-        if (bool_input.name != '') {
+        if (fields.boolean && bool_input.name != '') {
             boolean_p = bool_input.path.replace(/\\/g, '/')
         } else {
             boolean_p = ''
@@ -103,7 +104,7 @@ exports.tronco_widget_post = function(req, res, next) {
         var custom_type = fields.event_type
         // Get the file which contains the cluster data
         var clusters = ''
-        if (fields.y_cluster) {
+        if (fields.cluster) {
             clusters = files['CLUSTERinput'].path
             clusters = clusters.replace(/\\/g, '/')
             req.session.cluster_file = files['CLUSTERinput'].name
@@ -114,42 +115,64 @@ exports.tronco_widget_post = function(req, res, next) {
         var gistic_sep = (fields.gistic_separator_selection === 'Space/tabs') ? '':fields.gistic_separator_selection
         var boolean_sep = (fields.boolean_separator_selection === 'Space/tabs') ? '':fields.boolean_separator_selection
         var script = current_directory + '/picnic_import.R'
+        console.log(interest_path)
         const result = rscript.callSync(script, {maf_path : maf_p, 
-                                                genes_interest : interest_path, 
-                                                gistic_path : gistic_p, 
-                                                user_directory : session_dir,
-                                                boolean_path : boolean_p, 
-                                                custom_event : custom_type,
-                                                clusters_path : clusters,
-                                                cluster_separator : cluster_sep,
-                                                maf_separator : maf_sep,
-                                                gistic_separator : gistic_sep,
-                                                boolean_separator : boolean_sep})
-        console.log(result)
-        // Save in the session the name of the final dataset to use for reconstruction
-        req.session.to_reconstruct = result.to_plot
-        // Save in the session the names of the columns contained in the cluster dataset
-        req.session.columns = result.columns
-        // Save in the session the cluster separator
-        req.session.cluster_separator = cluster_sep
-        console.log('CLUSTERS: ' + files['CLUSTERinput'].path)
-       
-        //res.download(email_dir + '/MAF.RData')
-        // res.render('index')
-        if (result.result === 'no_errors') {
-            if (fields.y_cluster)
-                res.redirect('/tronco/cluster_selection')
-            else
-                res.redirect('/tronco/files_loaded')
-        } else {
-            res.send('Errors')
-        }
-        
+                                genes_interest : interest_path, 
+                                gistic_path : gistic_p, 
+                                user_directory : session_dir,
+                                boolean_path : boolean_p, 
+                                custom_event : custom_type,
+                                clusters_path : clusters,
+                                cluster_separator : cluster_sep,
+                                maf_separator : maf_sep,
+                                gistic_separator : gistic_sep,
+                                boolean_separator : boolean_sep})
+                    
+                        //if (err) {
+                         //   console.log('err: ' + err)
+                        //} else {
+                            console.log(result)
+                            console.log(result.result)
+                            console.log(result.to_plot)
+                            // Save in the session the name of the final dataset to use for reconstruction
+                            req.session.to_reconstruct = result.to_plot
+                            // Save in the session the names of the columns contained in the cluster dataset
+                            if (clusters != '') {
+                                req.session.columns = result.columns
+                                // Save in the session the cluster separator
+                                req.session.cluster_separator = cluster_sep
+                            }
+                            //console.log('CLUSTERS: ' + files['CLUSTERinput'].path)
+                            
+                            //res.download(email_dir + '/MAF.RData')
+                            // res.render('index')
+                            if (result.result === 'no_errors') {
+                                if (fields.cluster) {
+                                    res.redirect('/tronco/cluster_selection')
+                                } else { // NB: SISTEMARE
+                                    
+                                    res.redirect('/tronco/files_loaded')
+                                //return
+                                }
+                            } else {
+                                res.render('widget', 
+                                    {errors : ['Attention, there was an error in data input', 
+                                            'Make sure to select the correct files']})
+                                //res.send('Errors')
+                            }
+
+                        //}
+                        
+                
+    
     })
 
+    //next()                                          
+    //}, function(req, res) {
+       // console.log('ciaociao asincrono')
     form.on('fileBegin', function (name, file) {
         if (file.name != '') {
-            const [fileName, fileExt] = file.name.split('.')
+            //const [fileName, fileExt] = file.name.split('.')
             //fs.rename(file.path, )
             file.path = upload_dir + '/' + file.name
         }
@@ -162,10 +185,10 @@ exports.tronco_widget_post = function(req, res, next) {
         }
         
     })
+    //res.end()
+    //return next()
     
 }
-
-
 
 exports.select_clusters_get = function(req, res, next) {
     res.render('cluster_selection', 
@@ -203,13 +226,24 @@ exports.select_clusters_post = function(req, res, next) {
                                         cluster_path : cluster_file,
                                         reconstruction_dir : session_dir,
                                         separator : req.session.cluster_separator})
-        console.log(result)
-        if (result.result === 'no_errors') {
-            res.redirect('/tronco/files_loaded')
-        } else {
-            req.session.clusters_not_found = result.clusters
-            res.redirect('/tronco/files_loaded')
-        }
+                                   
+                                 
+                                    console.log(result)
+                                    if (result.result === 'no_errors') {
+                                        res.redirect('/tronco/reconstruction')
+                                    } else {
+                                        if (result.result === 'clusters_not_found') {
+                                            req.session.clusters_not_found = result.clusters
+                                            res.redirect('/tronco/reconstruction')
+                                        } else
+                                            res.render('cluster_selection', 
+                                        {errors: 
+                                            'Attention, there was an error in the cluster selection process. \nMake sure to select the right columns',
+                                        columns : req.session.columns})
+                                        
+                                    }
+                                
+        
     })
 }
 
@@ -219,9 +253,12 @@ exports.files_loaded_get = function(req, res, next) {
     var clusters = []
     fs.readdir(dir, function(err, files) {
         files.forEach(function(file, index) {
-            if (!(['MAF.RData', 'MAF.GISTIC.RData', 'MAF.GISTIC.BOOLEAN.RData', 'GISTIC.RData', 'BOOLEAN.RData', 'uploads'].includes(file))) {
-                const [fileName, fileExt] = file.split('.')
-                clusters.push(fileName)
+            if (!(['plots', 'uploads'].includes(file))) {
+                //const [fileName, fileExt] = file.split('.')
+                var name = file.split('.')
+                name.pop()
+                name = name.join('.')
+                clusters.push(name)
             }
         })
         console.log(req.session.clusters_not_found)
@@ -274,11 +311,50 @@ exports.files_loaded_post = function(req, res, next) {
                                             name : fields.cluster_selection,
                                             result_dir : result_dir,
                                             mutex : mutex})
-                console.log(result)
-                if (result.result == 'no_errors') {
-                    res.redirect('/tronco/tronco_plot')
-                } else
-                    res.send('Errors')
+                                     
+                                    //(result)=> {
+                                        console.log(result)
+                                        if (result.result == 'no_errors') {
+                                            // Case when the reconstruction encontered no errors
+                                            res.redirect('/tronco/tronco_plot')
+                                        } else {
+                                            // This is the case when reconstruction fails -> the page must
+                                            // be reloaded.
+                                            clusters = []
+                                            fs.readdir(session_dir, function(err, files) {
+                                                files.forEach(function(file, index) {
+                                                    if (!(['plots', 'uploads'].includes(file))) {
+                                                        //const [fileName, fileExt] = file.split('.')
+                                                        var name = file.split('.')
+                                                        name.pop()
+                                                        name = name.join('.')
+                                                        clusters.push(name)
+                                                    }
+                                                })//, function(){
+                                                    if (req.session.clusters_not_found) {
+                                                        res.render('widget_reconstruction',
+                                                                {clusters : clusters, 
+                                                                errors : [req.session.clusters_not_found],
+                                                                reconstruction_error : 
+                                                                    'Something went wrong in the reconstruction of cluster ' + fields.cluster_selection + '\nSelect another cluster'})
+                                                    } else {
+                                                        res.render('widget_reconstruction',
+                                                                    {clusters : clusters,
+                                                                    reconstruction_error : 
+                                                                    'Something went wrong in the reconstruction of cluster ' + fields.cluster_selection + '\nSelect another cluster'})
+                                                    }
+                                                })
+                                                
+                                                
+                                            //})
+                                             
+                                           
+
+                                        }
+                                            //res.send('Errors')
+                                            
+                                    //})
+                
                 
             } else if (fields.caprese_submit) {
                 const result = rscript.callSync(script, {method : 'caprese',
@@ -286,16 +362,52 @@ exports.files_loaded_post = function(req, res, next) {
                                                 directory : session_dir,
                                                 result_dir : result_dir,
                                                 name : fields.cluster_selection})
-                console.log(result)
-                if (result.result == 'no_errors') {
-                    res.redirect('/tronco/tronco_plot')
-                } else
-                    res.send('Errors')
+                                         
+                                        //(result) => {
+                                            console.log(result)
+                                            if (result.result == 'no_errors') {
+                                                // Case when the reconstruction encontered no errors
+                                                res.redirect('/tronco/tronco_plot')
+                                            } else {
+                                                // This is the case when reconstruction fails -> the page must
+                                                // be reloaded.
+                                                clusters = []
+                                                fs.readdir(session_dir, function(err, files) {
+                                                    files.forEach(function(file, index) {
+                                                        if (!(['plots', 'uploads'].includes(file))) {
+                                                            //const [fileName, fileExt] = file.split('.')
+                                                            var name = file.split('.')
+                                                            name.pop()
+                                                            name = name.join('.')
+                                                            clusters.push(name)
+                                                        }
+                                                    })//, function(){
+                                                        if (req.session.clusters_not_found) {
+                                                            res.render('widget_reconstruction',
+                                                                    {clusters : clusters, 
+                                                                    errors : [req.session.clusters_not_found],
+                                                                    reconstruction_error : 
+                                                                        'Something went wrong in the reconstruction of cluster ' + fields.cluster_selection + '\nSelect another cluster'})
+                                                        } else {
+                                                            res.render('widget_reconstruction',
+                                                                        {clusters : clusters,
+                                                                        reconstruction_error : 
+                                                                        'Something went wrong in the reconstruction of cluster ' + fields.cluster_selection + '\nSelect another cluster'})
+                                                        }
+                                                    })
+                                                    
+                                                    
+                                                //})
+                                                 
+                                               
+    
+                                            }
+                                        
             }
         })
         form.on('fileBegin', function (name, file) {
             if (file.name != '') {
-                const [fileName, fileExt] = file.name.split('.')
+                //const [fileName, fileExt] = file.name.split('.')
                 //fs.rename(file.path, )
                 file.path = upload_dir + '/' + file.name
             }
@@ -320,8 +432,11 @@ exports.tronco_plot_get = function(req, res, next) {
     var models_ready = []
     fs.readdir(result_dir, function(err, files) {
         files.forEach(function(file, index) {
-            console.log('!!!!!' + file)
-            models_ready.push(file)
+            console.log('!!!' + file)
+            var name = file.split('.')
+            name.pop()
+            name = name.join('.')
+            models_ready.push(name)
         })
         res.render('construction_successful',
             {models : models_ready})
@@ -367,8 +482,10 @@ exports.tronco_plot_post = function(req, res, next) {
         if (!fs.existsSync(plots_dir)) {
             fs.mkdirSync(plots_dir)
         }
-        var [name, ext] = fields.cluster_selection.split('.')
-        var path = result_dir + '/' + fields.cluster_selection 
+        var name = fields.cluster_selection
+        
+        
+        var path = result_dir + '/' + fields.cluster_selection + '.RData'
         var script = current_directory + "/test.R"
         console.log(path)
         console.log(name)
@@ -384,14 +501,18 @@ exports.tronco_plot_post = function(req, res, next) {
                                                 pr : c_pr, 
                                                 output_dir : plots_dir,
                                                 pf : pf,
-                                                sess_id : req.session.id});
-        console.log(result)
-        console.log(result.result)
-        fs.readFile(result.result, 'utf8', function(error, data) {
-            req.session.graph = data
-            fs.unlink(result.result)
-            res.render('tronco_visualization', {content : req.session.graph})
-        });
+                                                sess_id : req.session.id})
+                                        
+                                        //(result) => {
+                                            console.log(result)
+                                            console.log(result.result)
+                                            fs.readFile(result.result, 'utf8', function(error, data) {
+                                                req.session.graph = data
+                                                fs.unlink(result.result)
+                                                res.render('index', {content : req.session.graph})
+                                            });
+                                        //});
+        
 
     })
 }

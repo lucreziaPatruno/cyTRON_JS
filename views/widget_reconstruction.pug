@@ -20,9 +20,10 @@ block content
                         h6(style='color:white') Attention: no samples found for clusters: 
                     each e in errors
                         | #{e}
+            if reconstruction_error
+                div(class='container', style='border:solid white') #{reconstruction_error}
             | Choose which function to use for the reconstruction
-            
-            form(method='POST' action = 'files_loaded/reconstruction' enctype="multipart/form-data")
+            form(method='POST' action = '' enctype="multipart/form-data")
                 div.row
                     div(class='col my-1')
                         label(for="cluster_selection" class= "col-form-label") Select the cluster to include in the reconstruction:
@@ -31,8 +32,8 @@ block content
                             option --Select cluster--
                             each c in clusters
                                 option(value = c) #{c}
-                div.container(style = 'display: flex; justify-content: center; align-items: center;')
-                    button(class = "btn btn-block" style = 'background-color: #234a56; color: white' data-toggle = 'collapse', data-target = '#capri', type = 'button') Reconstruct using Capri
+                div.container(style = 'display: flex; justify-content: center; align-items: center;', id='capri_parameters_div')
+                    button(class = "btn btn-block" style = 'background-color: #234a56; color: white' data-toggle = 'collapse', data-target = '#capri', id='capri_parameters' type = 'button') Reconstruct using Capri (Press to set parameters)
             
                 div(id = 'capri', class = 'collapse my-3')
                     div(class = 'container')
@@ -76,13 +77,13 @@ block content
                                     div(class="custom-file")
                                         input(class="custom-file-input" name="MUTEXinput" type="file")
                                         label(class="custom-file-label" for="MUTEXinput") Choose file 
-                    div.container(style = 'display: flex; justify-content: center; align-items: center;')
-                        button.btn(type='submit', style = 'background-color: #234a56; color: white' name='capri_submit' value='capri') Submit
+                    div.container(style = 'display: flex; justify-content: center; align-items: center;', id = 'capri_submit_div')
+                        button.btn(type='submit', style = 'background-color: #234a56; color: white' id='capri_submit' name='capri_submit' value='capri') Submit
                       
 
                 hr(style = 'border-color: white')
-                div.container(style = 'display: flex; justify-content: center; align-items: center;')
-                    button(class = "btn btn-block" style = 'background-color: #234a56; color: white' data-toggle = 'collapse', data-target = '#caprese', type = 'button') Reconstruct using Caprese
+                div.container(style = 'display: flex; justify-content: center; align-items: center;', id = 'caprese_submit_div')
+                    button(class = "btn btn-block" style = 'background-color: #234a56; color: white', type = 'submit', id = 'caprese_submit' name='caprese_submit' value='caprese') Reconstruct using Caprese
                 div(id = 'caprese', class = 'collapse my-3')
                     div(class = 'container')
                         div.row

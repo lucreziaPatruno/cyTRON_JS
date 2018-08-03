@@ -45,7 +45,7 @@ for (i in 1:length(gruppi)) {
   samples = rownames(current_group)
   tryCatch({ 
     subset = trim(samples.selection(MAF.GISTIC, samples))
-    subset = annotate.description(subset, paste(cluster_name, ' subtype'))
+    subset = annotate.description(subset, paste(cluster_name, 'subtype'))
     # Save cluster files
     # N.B. Creare una cartella per i cluster
     save(subset, file = paste0(reconstruction_dir, '/', cluster_name, '.RData'))

@@ -3,59 +3,62 @@ extends layout
 block custom_css
     link(href = "/stylesheets/widget.css", rel = "stylesheet", type = "text/css")
 
+block scripts
+    script(src = "/javascripts/construction_successful.js", type = "text/javascript")
+
 block content
-    div(class = 'container main_div col-5 py-3', style='color: white; text-align:center')
+    div(class = 'container main_div col-5 py-3 my-5', style='color: white; text-align:center')
         h1(style='color:white')  The reconstruction was successful
         div.container(style = 'display: flex; justify-content: center; align-items: center;')
             button(class = "btn btn-block" style = 'background-color: #234a56; color: white' data-toggle = 'collapse', data-target = '#tronco_plot', type = 'button') Select the model to plot
         div(id = 'tronco_plot', class = 'collapse my-3')
             form(method='POST' action = '' enctype="multipart/form-data")
-                div(class='row', style='text-align:left')
-                    div(class='col')
-                        label(for="cluster_selection" class= "col-form-label") Model
-                    div(class='col')
-                        select(class="form-control" id="cluster_selection" name='cluster_selection')
-                            option --Select column name--
-                            each model in models
-                                option(value = model) #{model}
-                    div(class='w-100')
-                    div(class='col') Confidence Values
-                    div(class="col")
-                        fieldset
-                            div.form-group
-                                div(class = 'custom-control custom-checkbox  custom-control-inline') 
-                                    input(name="hg" class="custom-control-input" type="checkbox" value="hg", id = 'hg')
-                                    label(class="custom-control-label" for = 'hg') Hg  
-                                div(class = 'custom-control custom-checkbox custom-control-inline') 
-                                    input(name="tp" class="custom-control-input" type="checkbox" value="tp", id = 'tp')
-                                    label(class="custom-control-label" for = 'tp') Tp  
-                                div(class = 'custom-control custom-checkbox custom-control-inline') 
-                                    input(name="tp" class="custom-control-input" type="checkbox" value="pr", id = 'pr')
-                                    label(class="custom-control-label" for = 'pr') Pr 
-                    div(class='w-100')
-                    div.col
-                        fieldset
-                            div.form-group
-                                div(class = 'custom-control custom-checkbox  custom-control-inline') 
-                                    input(name="hg" class="custom-control-input" type="checkbox" value="pf", id = 'pf')
-                                    label(class="custom-control-label" for = 'pf') Print prima facie  
-                    div.col
-                        fieldset
-                            div.form-group
-                                div(class = 'custom-control custom-checkbox  custom-control-inline') 
-                                    input(name="hg" class="custom-control-input" type="checkbox" value="disconnected", id = 'disconnected')
-                                    label(class="custom-control-label" for = 'disconnected') Print disconnected nodes  
+                div.container
+                    div(class='row', style='text-align:left')
+                        div(class='col')
+                            label(for="cluster_selection" class= "col-form-label") Model
+                        div(class='col')
+                            select(class="form-control" id="cluster_selection" name='cluster_selection')
+                                option --Select model name--
+                                each model in models
+                                    option(value = model) #{model}
+                        div(class='w-100 mt-3')
+                        div(class='col') Confidence Values
+                        div(class="col")
+                            fieldset
+                                div.form-group
+                                    div(class = 'custom-control custom-checkbox  custom-control-inline') 
+                                        input(name="hg" class="custom-control-input" type="checkbox" value="hg", id = 'hg')
+                                        label(class="custom-control-label" for = 'hg') Hg  
+                                    div(class = 'custom-control custom-checkbox custom-control-inline') 
+                                        input(name="tp" class="custom-control-input" type="checkbox" value="tp", id = 'tp')
+                                        label(class="custom-control-label" for = 'tp') Tp  
+                                    div(class = 'custom-control custom-checkbox custom-control-inline') 
+                                        input(name="tp" class="custom-control-input" type="checkbox" value="pr", id = 'pr')
+                                        label(class="custom-control-label" for = 'pr') Pr 
+                        div(class='w-100')
+                        div.col
+                            fieldset
+                                div.form-group
+                                    div(class = 'custom-control custom-checkbox  custom-control-inline') 
+                                        input(name="hg" class="custom-control-input" type="checkbox" value="pf", id = 'pf')
+                                        label(class="custom-control-label" for = 'pf') Print prima facie  
+                        div.col
+                            fieldset
+                                div.form-group
+                                    div(class = 'custom-control custom-checkbox  custom-control-inline') 
+                                        input(name="hg" class="custom-control-input" type="checkbox" value="disconnected", id = 'disconnected')
+                                        label(class="custom-control-label" for = 'disconnected') Print disconnected nodes  
 
-                       
+                        
 
-                div.container(style = 'display: flex; justify-content: center; align-items: center;')
-                    button.btn(type='submit', style = 'background-color: #234a56; color: white ') Submit
+                    div.container(style = 'display: flex; justify-content: center; align-items: center;' id = 'submit_div')
+                        button.btn(type='submit', style = 'background-color: #234a56; color: white' id = 'submit') Submit
 
-            
-        h2 or
-        form(method='GET' action = '/tronco/files_loaded' enctype="multipart/form-data") 
-            div.row
-                div.container(style = 'display: flex; justify-content: center; align-items: center;')
-                    button(class = "btn btn-block" style = 'background-color: #234a56; color: white' type = 'submit') Go back to reconstruct another model       
+                
+        h2(style='color:white') or
+        form(method='GET' action = '/tronco/reconstruction' enctype="multipart/form-data") 
+            div.container(style = 'display: flex; justify-content: center; align-items: center;')
+                button(class = "btn btn-block" style = 'background-color: #234a56; color: white'  type = 'submit') Go back to reconstruct another model       
 
                         
