@@ -7,7 +7,7 @@ var request_module = require('request')
 exports.start_widget_get = function(req, res, next) {
     var dir = __dirname + '/widget_data'
     if (!fs.existsSync(dir))
-        fs.mkdirSync('dir')
+        fs.mkdirSync(dir)
     res.render('insert_email')
 }
 
@@ -154,7 +154,7 @@ exports.tronco_widget_post = function(req, res, next) {
                                     res.redirect('/tronco/cluster_selection')
                                 } else { // NB: SISTEMARE
                                     
-                                    res.redirect('/tronco/files_loaded')
+                                    res.redirect('/tronco/reconstruction')
                                 //return
                                 }
                             } else {
