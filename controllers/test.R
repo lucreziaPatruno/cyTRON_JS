@@ -25,7 +25,7 @@ model = load(json$modelPath)
 prima_facie = json$pf
 
 session = json$sess_id
-outputFile =  paste(output, '/', modelName, session, '.graphml', sep = '')
+outputFile =  paste(output, '/', modelName, '.graphml', sep = '')
 
 export.graphml(get(model), file = outputFile, confidence = conf, scale.nodes = 0.6, pf = prima_facie)
 # print(args);

@@ -19,5 +19,17 @@ block content
             ul
                 li!= error
         hr(style = 'border-color: white')
-        div(class = 'container')
-            h1() Models list
+        div(class = 'container', style='color:white')
+            if graphs
+                | OR
+                form(method='POST' action = 'visualize_constructed' enctype="multipart/form-data", class = 'form-signin')
+                    div.row
+                        div(class='col my-1')
+                            label(for="graph_selection" class= "col-form-label") Visualize the result of a previously made analysis
+                        div(class='col my-1')
+                            select(class="form-control" id="graph_selection" name='graph_selection')
+                                option --Select graph--
+                                each c in graphs
+                                    option(value = c) #{c[1]} (Reconstruction #{c[0]})
+                    div.container(style = 'display: flex; justify-content: center; align-items: center;')
+                        button.btn(type='submit' style = 'background-color: #234a56; color: white') Visualize

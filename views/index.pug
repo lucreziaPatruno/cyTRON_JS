@@ -16,7 +16,7 @@ block scripts
   script(src = "/javascripts/visualization.js", type = "text/javascript")
 
 block content
-  div(class='container col-3 main_div' style='float:right; height:100vh; color:white') 
+  div(class='container col-3' style='float:right; height:100vh; display: block; overflow: auto;color:white; background: rgb(3,19,31, 0.9)') 
     div(class='row')
       div.col
         div(class="input-group pt-5 disabled", id ='file_cluster')
@@ -31,9 +31,43 @@ block content
                 div(id="drop_zone") Drop your file here
                 output(id = "list")
     div.container(style = 'display: flex; justify-content: center; align-items: center;')
-      button.btn(id='reset_button' type='submit', style = 'background-color: #234a56; color: white; visibility:hidden') Reset graph position
-    div(class='container' id = "confidenceValues", style = 'visibility: hidden; height: 50%; border:dashed 1px') Graph information will be displayed here
-    
+      button.btn.mb-2(id='reset_button' type='submit', style = 'background-color: #234a56; color: white; visibility:hidden') Reset graph position
+    div.container.py-2(id = "confidenceValues" style='visibility:hidden; border:dashed 1px') 
+      div.row(id='temporary_label') Graph information will be displayed here
+      div.container(style = 'display: none; justify-content: center; align-items: center;', id='loading_button')
+        div.loader
+      table.table.table-sm(id='table_nodes' style='display:none')
+        tbody
+          tr
+            th(scope='row') Official Name
+            td(id='official_name') 
+          tr
+            th(scope='row') Symbol
+            td(id='symbol') 
+          tr
+            th(scope='row') Gene type
+            td(id='type') 
+          tr
+            th(scope='row') Description
+            td(id='description') 
+      table.table.table-sm(id='table_logic' style='display:none')
+        tbody
+          tr
+            th(scope='row' id='logic_description') 
+          tr
+      table.table(id='table_edges' style='display:none')
+        tbody
+          tr(id='no_conf_row' style='display:none')
+            th No information to display for this edge
+          tr(id='hg_row' style='display:none')
+            th(scope='row') hg
+            td(id='hg_value') 
+          tr(id='tp_row' style='display:none')
+            th(scope='row') tp
+            td(id='tp_value') 
+          tr(id='pr_row' style='display:none')
+            th(scope='row') pr
+            td(id='pr_value') 
   if content
     div(style='display:none', id = 'graphstr')=content
   
