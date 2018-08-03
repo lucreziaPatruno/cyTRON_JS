@@ -5,6 +5,9 @@ var fs = require('fs')
 var request_module = require('request')
 
 exports.start_widget_get = function(req, res, next) {
+    var dir = __dirname + '/widget_data'
+    if (!fs.existsSync(dir))
+        fs.mkdirSync('dir')
     res.render('insert_email')
 }
 
