@@ -3,6 +3,7 @@ block scripts
     script(src = "/javascripts/waiting.js", type = "text/javascript")
 block custom_css
     link(href = "/stylesheets/widget.css", rel = "stylesheet", type = "text/css")
+    link(href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css", rel = "stylesheet", type = "text/css")
 
 block content
     div(class = 'container' style='padding-top: 20px')
@@ -20,14 +21,45 @@ block content
                         div(class = 'carousel-item active')
                         
                             div(class='container col-8 my-1')
-                                h2(class = 'display-6', style = 'color: white')
-                                    |  Choose input file(s)
-                                | This should be data of a given cancer type which has already been pre-processed
+                                div.row
+                                    div.col.col-10
+                                        h2(class = 'display-6', style = 'color: white')
+                                            |  Choose input file(s)
+                                    div.col()
+                                        i(class='fa fa-question fa-3x' id='helpIcon')
+                                        
+                                div.container(id = 'info_div' style='background:white; color:black;position:absolute; display:none; z-index:10') 
+                                    div.container.col-8(style='float:left') Input information
+                                    div.container.col-1(style='float:right;' id='close_info')
+                                        i(class='fa fa-window-close fa-2x' style='color:black;' id='ciao')
+                                    table.table(id='table_edges')
+                                        tbody
+                                            tr(id='maf_row')
+                                                th(scope='row') MAF
+                                                td Mutation Annotation Format (MAF) is a tab-delimited text file with aggregated mutation information from VCF Files and are generated on a project-level
+                                                td #[a(href='https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/') NIH documentation link]
+                                            tr(id='gistic_row' )
+                                                th(scope='row') GISTIC
+                                                td(id='hg_value')  GISTIC format is a tab-delimited text file that defines a feature track displaying the q-value for regions of amplification or deletion found using GISTIC (Beroukhim et al., 2007). The first row contains eight column headings, which must be identical to those listed in the following table. Each subsequent row defines a GISTIC feature.
+                                                td #[a(href='https://software.broadinstitute.org/software/igv/GISTIC') IGV documentation link]
+                                            tr(id='tp_row')
+                                                th(scope='row') BOOLEAN
+                                                td(id='tp_value') A custom boolean table, where each cell indicates 
+                                                    |the presence of the corresponding mutation in the corresponding sample
+                                            tr(id='interest_rwo')
+                                                th(scope='row') ITEREST
+                                                td(id='pr_value') A txt or csv file contaning a list of genes to take into consideration for model reconstruction.
+                                                    | This step can be used to further annotate the result and speed up the computation, 
+                                                    | as only genes in this list will be taken into consideration
+                                            tr
+                                                th(scope='row') CLUSTER
+                                                td(id='pr_value') A txt or csv file contaning a tumor subtype associated to each sample
+                                        
                                 if errors
                                     div(class='container', style='border:solid white')
                                         each e in errors
                                             | #{e}
-                                div(class = 'form-group vert')
+                                div(class = 'form-group vert mt-2')
                                     div(class = 'container')
                                         div(class = 'custom-control custom-checkbox space')
                                             input(name="MAF" class="custom-control-input" type="checkbox" value="MAF", id = 'MAF', accept='text/.csv')
@@ -37,26 +69,8 @@ block content
                                         div( class="custom-file" id='file_maf')
                                             input(class="custom-file-input" name="MAFinput" id='MAFinput' type="file")
                                             label(class="custom-file-label" for="MAFinput", id='MAFlabel') Choose file
-                                    h3(id="helpIcon" data-toggle="modal" data-target="#myModal") &nbsp;&nbsp;&nbsp; 
-                                        span(class="glyphicon glyphicon-question-sign")
-                                    div.container(id = 'info_div' style='background:white; color:black;position:absolute; display:none; z-index:10') Input information
-                                        table.table(id='table_edges')
-                                            tbody
-                                                tr(id='maf_row')
-                                                    th(scope='row') MAF
-                                                    td Mutation Annotation Format (MAF) is a tab-delimited text file with aggregated mutation information from VCF Files and are generated on a project-level
-                                                    td #[a(href='https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/') NIH documentation link]
-                                                tr(id='gistic_row' )
-                                                    th(scope='row') GISTIC
-                                                    td(id='hg_value')  GISTIC format is a tab-delimited text file that defines a feature track displaying the q-value for regions of amplification or deletion found using GISTIC (Beroukhim et al., 2007). The first row contains eight column headings, which must be identical to those listed in the following table. Each subsequent row defines a GISTIC feature.
-                                                    td #[a(href='https://software.broadinstitute.org/software/igv/GISTIC') IGV documentation link]
-                                                tr(id='tp_row' style='display:none')
-                                                    th(scope='row') BOOLEAN
-                                                    td(id='tp_value') A custom boolean table, where each cell indicates the presence of the corresponding mutation in the corresponding sample
-                                                    td ciao
-                                                tr(id='pr_row' style='display:none')
-                                                    th(scope='row') pr
-                                                    td(id='pr_value') 
+                                    
+                                    
                                 div(class='form-group vert')
                                     div.container
                                         label(for="maf_separator_selection" class= "col-form-label") Select file separator:
