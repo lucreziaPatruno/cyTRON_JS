@@ -1,8 +1,8 @@
 library(devtools)
-library(pheatmap)
-library(gridExtra)
-library(vioplot)
-library(xlsx)
+#library(pheatmap)
+#library(gridExtra)
+#library(vioplot)
+#library(xlsx)
 library(TRONCO)
 library(rjson)
 # Retrieve the arguments
