@@ -26,6 +26,19 @@ document.addEventListener("DOMContentLoaded", function() {
     
     document.getElementById('caprese_submit').disabled = true
     document.getElementById('caprese_submit_div').style.opacity = 0.7
+
+    document.getElementById('MUTEXinput').disabled = true
+    document.getElementById('file_mutex').style.opacity = 0.7
+
+    document.getElementById('MUTEX').addEventListener('change', function() {
+        if (!this.checked) {
+            document.getElementById('file_mutex').style.opacity = 0.7
+            document.getElementById('MUTEXinput').disabled = true
+        } else {
+            document.getElementById('file_mutex').style.opacity = 1
+            document.getElementById('MUTEXinput').disabled = false
+        }
+    })
     
     select_cluster.addEventListener('change', function(){
         if (select_cluster.value == '--Select cluster--') {

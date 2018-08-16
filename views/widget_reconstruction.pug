@@ -66,16 +66,19 @@ block content
                                     div.form-group
                                         div(class="custom-control custom-radio custom-control-inline")
                                             input(type="radio" id="y_err" name="err_rate_capri" class="custom-control-input" checked="" value='yes')
-                                            label(class="custom-control-label" for="hc") Yes
+                                            label(class="custom-control-label" for="y_err") Yes
                                         div(class="custom-control custom-radio custom-control-inline")
                                             input(type="radio" id="no_err" name="err_rate_capri" class="custom-control-input" value='no')
-                                            label(class="custom-control-label" for="err_rate_capri") No
+                                            label(class="custom-control-label" for="no_err") No
                             div(class='w-100')
-                            div(class='col-4 py-2') Insert mutex file:
+                            div(class='col-4 py-2') 
+                                div(class = 'custom-control custom-checkbox space')
+                                    input(name="MUTEX" class="custom-control-input" type="checkbox" value="MUTEX", id = 'MUTEX', accept='text/.csv')
+                                    label(class="custom-control-label" for = 'MUTEX') Insert MUTEX file   
                             div(class="col my-1")
                                 div(class="input-group mb-3")
-                                    div(class="custom-file")
-                                        input(class="custom-file-input" name="MUTEXinput" type="file")
+                                    div(class="custom-file" id ='file_mutex')
+                                        input(class="custom-file-input" name="MUTEXinput" type="file", id ='MUTEXinput')
                                         label(class="custom-file-label" for="MUTEXinput") Choose file 
                     div.container(style = 'display: flex; justify-content: center; align-items: center;', id = 'capri_submit_div')
                         button.btn(type='submit', style = 'background-color: #234a56; color: white' id='capri_submit' name='capri_submit' value='capri') Submit

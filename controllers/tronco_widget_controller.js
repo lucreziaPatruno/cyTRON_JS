@@ -119,6 +119,7 @@ exports.tronco_widget_get = function(req, res, next) {
         var script = current_directory + '/load_packages_picnic.R'
         const result = rscript.callSync(script, 
                                         {working_directory : current_directory}) //(err, result) => {res.render('widget')})
+        console.log(result)
         res.render('widget')
     } else {
         // The session expired -> display home page
@@ -411,7 +412,11 @@ exports.files_loaded_post = function(req, res, next) {
                 var bic = fields.bic ? fields.bic:''
                 var aic = fields.aic ? fields.aic:''
                 var mutex = files['MUTEXinput']
-                var mutex = mutex.name!='' ? mutex.path:''
+                if (fields.MUTEX && mutex.name != '') {
+                    mutex = maf.path.replace(/\\/g, '/')
+                } else {
+                    mutex = ''
+                }
                 console.log(mutex)
                 const result = rscript.callSync(script, {method : 'capri',
                                             model : session_dir + '/' + fields.cluster_selection + '.RData',
