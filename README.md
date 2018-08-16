@@ -6,6 +6,7 @@ cyTRON in an application for cancer progression analysis. It is an interface to 
 This application has been developed using NodeJS. In order to run it it is necessary to install the following:
 * Node.js
 * R
+* Java
 
 ### Installing
 
