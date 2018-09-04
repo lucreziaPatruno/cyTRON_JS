@@ -10,7 +10,7 @@ args <- commandArgs(trailingOnly = TRUE)
 json <- fromJSON(args)
 
 x = load(json$data)
-min_freq = json$filter_freq
+# min_freq = json$filter_freq
 cluster_column = strtoi(json$cluster_column) + 1
 reconstruction_dir = json$reconstruction_dir
 id_column = strtoi(json$id_column) + 1

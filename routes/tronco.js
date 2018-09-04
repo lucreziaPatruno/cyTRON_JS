@@ -32,4 +32,6 @@ router.post('/tronco_plot', widget.tronco_plot_post)
 
 router.post('/visualize_constructed', widget.visualize_constructed_post)
 
+router.get('/save', widget.save_model)
+
 module.exports = router;

@@ -2,6 +2,7 @@ var path = require('path');
 var formidable = require('formidable')
 const rscript = require('js-call-r');
 var fs = require('fs')
+// var zip = require('express-zip')
 var request_module = require('request')
 
 // This function is called when the application is started
@@ -311,7 +312,7 @@ exports.select_clusters_post = function(req, res, next) {
             // Call the script for mutation subtyping
             const result = rscript.callSync(script, 
                 {data : data_path, 
-                    filter_freq : fields.freq_selection, 
+                    // filter_freq : fields.freq_selection, 
                     cluster_column : fields.cluster_selection,
                     id_column : fields.id_selection,
                     cluster_path : cluster_file,
@@ -406,6 +407,8 @@ exports.files_loaded_post = function(req, res, next) {
         var upload_dir = session_dir + '/uploads'
         var form = new formidable.IncomingForm({keepExtensions : true});
         form.parse(req, (err, fields, files) => {
+            var min_freq = (fields.freq && fields.freq_selection != '') ? fields.freq_selection : ''
+            console.log('!!!!' + min_freq)
             if (fields.capri_submit) {
                 // Case when the algorithm selected is capri
                 // Get algorithm parameters set by the user
@@ -427,7 +430,8 @@ exports.files_loaded_post = function(req, res, next) {
                                             bootstrap : fields.err_rate_capri,
                                             name : fields.cluster_selection,
                                             result_dir : result_dir,
-                                            mutex : mutex})
+                                            mutex : mutex,
+                                            filter_freq : min_freq})
                                      
                                     //(result)=> {
                 console.log(result)
@@ -467,7 +471,8 @@ exports.files_loaded_post = function(req, res, next) {
                                                 model : session_dir + '/' + fields.cluster_selection +'.RData',
                                                 directory : session_dir,
                                                 result_dir : result_dir,
-                                                name : fields.cluster_selection})
+                                                name : fields.cluster_selection,
+                                                filter_freq : min_freq})
                                          
                                         //(result) => {
                 console.log(result)
@@ -604,6 +609,7 @@ exports.tronco_plot_post = function(req, res, next) {
             console.log(result.result)
             fs.readFile(result.result, 'utf8', function(error, data) {
                 req.session.graph = data
+                req.session.graph_name = name
                 //fs.unlink(result.result)
                 res.render('index', {content : req.session.graph})
             });
@@ -620,14 +626,34 @@ exports.visualize_constructed_post = function(req, res, next) {
         var form = new formidable.IncomingForm()
         form.parse(req, (err, fields, files) => {
             var array = JSON.parse(fields.graph_selection);
+            // The variable array now contains the study name in the 
+            // first position, and the model name in second position
             // Get the path to the graph
             var file_graph = session_dir + array[0] + '/plots/' +
             array[1] + '.graphml'
             fs.readFile(file_graph, 'utf8', function(error, data) {
-                console.log(data)
+                req.session.graph_name = array[1]
+                if (!req.session.title) {
+                    req.session.title = array[0]
+                }
                 // Render the page for visualization
                 res.render('index', {content : data})
             })
         })
     }
+}
+
+exports.save_model = function(req, res, next) {
+    session_dir = __dirname + '/widget_data/' + req.session.email + '/' + req.session.title
+    // get dir where reconstructed models
+    // files are be stored
+    result_dir =  session_dir + '/results/'
+    // get dir where graphml files will be stored
+    plots_dir = session_dir + '/plots/'
+    /*res.zip([
+        { path: plots_dir + req.session.graph_name + '.graphml', name: '/path/in/zip/file1.name' },
+        { path: result_dir + req.session.graph_name + '.Rdata', name: 'file2.name' }
+      ]);*/
+    res.download(plots_dir + req.session.graph_name + '.graphml')
+    // res.download(result_dir + req.session.graph_name + '.Rdata')
 }

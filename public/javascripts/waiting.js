@@ -34,6 +34,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById('INTERESTinput').disabled = true
     document.getElementById('file_interest').style.opacity = 0.7
+
+    document.getElementById('event_type').disabled = true
+    document.getElementById('description_boolean').style.opacity = 0.7    
     
     document.getElementById('cluster').addEventListener('change', function() {
         
@@ -106,6 +109,18 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById('file_boolean').style.opacity = 1
             document.getElementById('sep_boolean').style.opacity = 1
 
+        }
+    })
+
+    document.getElementById('event_annotation').addEventListener('change', function() {
+        
+        if (!this.checked) {
+            document.getElementById('event_type').disabled = true
+            document.getElementById('description_boolean').style.opacity = 0.7
+           
+        } else {
+            document.getElementById('event_type').disabled = false
+            document.getElementById('description_boolean').style.opacity = 1
         }
     })
 

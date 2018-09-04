@@ -68,8 +68,15 @@ block content
           tr(id='pr_row' style='display:none')
             th(scope='row') pr
             td(id='pr_value') 
-  if content
-    div(style='display:none', id = 'graphstr')=content
+    if content
+      div(style='display:none', id = 'graphstr')=content
+    form(method='GET' action = '/tronco/reconstruction' enctype="multipart/form-data")
+      div.container.my-3(style = 'display: flex; justify-content: center; align-items: center;')
+        button.btn.mb-2(id='reset_button' type='submit', style = 'background-color: #234a56; color: white') Reconstruct another model
+    form(method='GET' action = '/tronco/save' enctype="multipart/form-data")
+      div.container.my-3(style = 'display: flex; justify-content: center; align-items: center;')
+        button.btn.mb-2(id='reset_button' type='submit', style = 'background-color: #234a56; color: white') Save graph
+
   
   div(class='container col-9 cy_div py-2' id='cy' style='float:left; height:100vh; position:absolute')
 

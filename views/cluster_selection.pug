@@ -31,12 +31,7 @@ block content
                                 option --Select column name--
                                 each c, index in columns
                                     option(value = index) #{c}
-                        div(class='w-100')
-                        div(class='col my-1')
-                            label(for="freq_selection" class="col-form-label") Insert minimum frequency:
-                        div(class="col my-1")
-                            input(type="number" class="form-control" id="freq_selection" name='freq_selection' min=0 max=1 step=0.001)
-
+                        
                 div.container(style = 'display: flex; justify-content: center; align-items: center;', id='submit_div')
                     button.btn(type='submit', style = 'background-color: #234a56; color: white' id='submit_button') Submit
 

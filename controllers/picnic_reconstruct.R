@@ -10,9 +10,16 @@ args <- commandArgs(trailingOnly = TRUE)
 json <- fromJSON(args)
 method = json$method
 input = load(json$model)
+input = get(input)
 dir = json$directory
 name = json$name
+min_freq = json$filter_freq
 
+if (min_freq != '') {
+    min_freq = strtoi(min_freq)
+    input = events.selection(input, filter.freq = min_freq)
+}
+ 
 result_dir = json$result_dir
 
 if (method == 'capri') {
@@ -28,7 +35,7 @@ if (method == 'capri') {
         reg = c('bic', 'aic')
     }
     mutex_path = json$mutex
-    input = get(input) 
+     
     if (mutex_path != '') {
         mutex = import.mutex.groups(json$mutex)
         for (w in mutex) {
@@ -44,7 +51,7 @@ if (method == 'capri') {
     
 }
 if (method == 'caprese') {
-    model_caprese = tronco.caprese(get(input))
+    model_caprese = tronco.caprese(input)
     save(model_caprese, file = paste0(result_dir, '/', name, '_caprese.Rdata'))
 }
 

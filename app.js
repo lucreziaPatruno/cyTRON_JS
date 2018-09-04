@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session')
+var MemoryStore = require('memorystore')(session)
 
 var indexRouter = require('./routes/index');
 var troncoRouter = require('./routes/tronco');
@@ -24,8 +25,12 @@ app.use(cookieParser());
 // the static directories with the express.static middleware function.
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(express.static(path.join(__dirname, '/node_modules')))
-app.use(session({secret : 'First secret',
-                  name : "id"}))
+app.use(session({ store: new MemoryStore({
+                  checkPeriod: 86400000 // prune expired entries every 24h
+                }),
+                secret : 'First secret',
+                name : "id",
+                }))
 
 app.use('/', indexRouter);
 app.use('/tronco', troncoRouter);

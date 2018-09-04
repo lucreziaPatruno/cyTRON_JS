@@ -1,35 +1,60 @@
-extends layout
+doctype html
+html
+    head
+        meta(name="viewport", content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1")
+        
+        link(href="/cytoscape-panzoom/font-awesome-4.0.3/css/font-awesome.css", rel="stylesheet" type="text/css")
 
-block custom_css
-    link(href = "/stylesheets/insert_email.css", rel = "stylesheet", type = "text/css")
+        link(href = "/bootswatch/dist/cerulean/bootstrap.min.css", rel = "stylesheet", type = "text/css")
 
-block content
-    div.py-3(style = 'font-size: 60px; color:white;background:#03131f')
-        div(class = 'container text-center')
-            h1.display-1(style = 'color: White') Welcome to cyTRON
-    div(class = 'container mt-2 col-4 py-2', id = 'main_div', style = 'border-radius: 4px')
-        div(class = 'container text-center')
-            h3(style = 'color: White') Access the TRONCO widget 
-            
-            hr(style = 'border-color:#234a56')
+        link(href ='/stylesheets/layout.css', rel = 'stylesheet', type = 'text/css')
+
+        link(href = "/stylesheets/insert_email.css", rel = "stylesheet", type = "text/css")
+
+        script(src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous", type = 'text/javascript')
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous", type = 'text/javascript')
+        script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous", type = 'text/javascript')
     
-        form(method='POST' action = '' enctype="multipart/form-data", class = 'form-signin')
-            div(class = 'container px-5')
-                div(class = 'container', style = 'text-align:center')
-                    h4(style = 'color : white') Insert your e-mail
-                    h5(style = 'color: white') to generate a cancer-progression analysis
-                div(class = 'form-group')
-                    label(for="inputEmail" class="sr-only") Email address
-                    input#inputEmail(type="email" name = 'inputEmail' style = 'border: solid 1px #234a56' class="form-control" placeholder="Email address" required autofocus)
-            
-                div.container(style = 'display: flex; justify-content: center; align-items: center;')
-                    button.btn(type='submit', style = 'background-color: #234a56; color: white ') Submit
-        hr(style = 'border-color:#234a56')
+    body
+        div(id='prova')
 
-        div(class='container px-5')
-            div(class = 'container', style = 'text-align:center') 
-                h4(style = 'color : white') Access as guest #[a(href='/welcome/visualization') here] to visualize an already constructed model
+            div.py-3(style = 'font-size: 60px; color:white;background:#03131f')
+                div(class = 'container text-center')
+                    h1.display-1(style = 'color: White') Welcome to cyTRON/JS
+                    h3.display-4(style='color:white; font-size:30px') An application for cancer progression analysis, based on the R-library TRONCO
+            
+            div.container-fluid(style='color:white')
+                div.row.justify-content-center
+                    div.col-2.rounded-circle.py-3.align-self-end(style='background-color: rgba(3,19,31,0.9); text-align: center') 
+                        h4.display-4(style = 'color : white; font-size:25px') 
+                            a(href = 'https://sites.google.com/site/troncopackage/', target='_blank' style = 'color: white !important') Learn more about TRONCO
+                    div(class = 'container mt-2 mx-3 col-7 py-4 rounded-circle', style = 'background-color: rgba(3,19,31,0.9)')
+                    
+                        form(method='POST' action = '' enctype="multipart/form-data", class = 'form-signin')
+                            div(class = 'container px-5')
+                                div(class = 'container', style = 'text-align:center')
+                                    h4.display-4(style = 'color : white; font-size:35px') 
+                                        b Insert your e-mail
+                                    h5.display-4(style = 'color : white; font-size:25px') to generate a cancer-progression analysis
+                                div(class = 'form-group')
+                                    label(for="inputEmail" class="sr-only") Email address
+                                    input#inputEmail(type="email" name = 'inputEmail' style = 'border: solid 1px #234a56' class="form-control" placeholder="Email address" required autofocus)
+                            
+                                div.container(style = 'display: flex; justify-content: center; align-items: center;')
+                                    button.btn(type='submit', style = 'background-color: #234a56; color: white ') Submit
+                        div(class="group py-2")
+                            div(class="item line")
+                            div(class="item text") OR
+                            div(class="item line")
+
+
+                        div(class='container px-5')
+                            div(class = 'container', style = 'text-align:center') 
+                                h4.display-4(style = 'color : white; font-size:35px') #[a(href='/welcome/visualization' style='color : white; text-decoration: underline') Access as guest] to visualize an already constructed model
+
+                    div.col-2.rounded-circle.py-3.align-self-end(style='background-color: rgba(3,19,31,0.9);text-align: center') 
+                        h4.display-4(style = 'color : white; font-size:25px') Read an introductory guide
+                        
                 
-        
-        
-    
+                
+            
