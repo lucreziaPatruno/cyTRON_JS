@@ -30,8 +30,16 @@ router.get('/tronco_plot', widget.tronco_plot_get)
 
 router.post('/tronco_plot', widget.tronco_plot_post)
 
+router.get('/tronco_plot_error', widget.tronco_plot_error_get)
+
 router.post('/visualize_constructed', widget.visualize_constructed_post)
 
 router.get('/save', widget.save_model)
+
+router.get('/logout', widget.logout_post)
+
+router.post('/visualize_public', widget.visualize_public_post)
+
+router.get('/complete_analysis', widget.complete_analysis_get)
 
 module.exports = router;

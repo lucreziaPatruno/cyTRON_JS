@@ -3,6 +3,7 @@ extend layout
 block custom_css
   link(href = "/cytoscape-panzoom/cytoscape.js-panzoom.css", rel = "stylesheet",  type = "text/css")
   link(href = "/stylesheets/widget.css", rel = "stylesheet", type = "text/css")
+  link(href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css", rel = "stylesheet", type = "text/css")
 
 
 block scripts
@@ -16,69 +17,111 @@ block scripts
   script(src = "/javascripts/visualization.js", type = "text/javascript")
 
 block content
-  div(class='container col-3' style='float:right; height:100vh; display: block; overflow: auto;color:white; background: rgb(3,19,31, 0.9)') 
-    div(class='row')
-      div.col
-        div(class="input-group pt-5 disabled", id ='file_cluster')
-          fieldset.disabled
-            div( class="custom-file")
-              input(class="custom-file-input" id='files' name="files[]" type="file")
-              label(class="custom-file-label" for="CLUSTERinput") Choose graph
-            div.row
-              div.col.py-2(style='text-align:center') or
-            div.row
-              div.col
-                div(id="drop_zone") Drop your file here
-                output(id = "list")
-    div.container(style = 'display: flex; justify-content: center; align-items: center;')
-      button.btn.mb-2(id='reset_button' type='submit', style = 'background-color: #234a56; color: white; visibility:hidden') Reset graph position
-    div.container.py-2(id = "confidenceValues" style='visibility:hidden; border:dashed 1px') 
-      div.row(id='temporary_label') Graph information will be displayed here
-      div.container(style = 'display: none; justify-content: center; align-items: center;', id='loading_button')
-        div.loader
-      table.table.table-sm(id='table_nodes' style='display:none')
-        tbody
-          tr
-            th(scope='row') Official Name
-            td(id='official_name') 
-          tr
-            th(scope='row') Symbol
-            td(id='symbol') 
-          tr
-            th(scope='row') Gene type
-            td(id='type') 
-          tr
-            th(scope='row') Description
-            td(id='description') 
-      table.table.table-sm(id='table_logic' style='display:none')
-        tbody
-          tr
-            th(scope='row' id='logic_description') 
-          tr
-      table.table(id='table_edges' style='display:none')
-        tbody
-          tr(id='no_conf_row' style='display:none')
-            th No information to display for this edge
-          tr(id='hg_row' style='display:none')
-            th(scope='row') hg
-            td(id='hg_value') 
-          tr(id='tp_row' style='display:none')
-            th(scope='row') tp
-            td(id='tp_value') 
-          tr(id='pr_row' style='display:none')
-            th(scope='row') pr
-            td(id='pr_value') 
-    if content
-      div(style='display:none', id = 'graphstr')=content
-    form(method='GET' action = '/tronco/reconstruction' enctype="multipart/form-data")
-      div.container.my-3(style = 'display: flex; justify-content: center; align-items: center;')
-        button.btn.mb-2(id='reset_button' type='submit', style = 'background-color: #234a56; color: white') Reconstruct another model
-    form(method='GET' action = '/tronco/save' enctype="multipart/form-data")
-      div.container.my-3(style = 'display: flex; justify-content: center; align-items: center;')
-        button.btn.mb-2(id='reset_button' type='submit', style = 'background-color: #234a56; color: white') Save graph
+  div.container-fluid
+    div.row
+      div(class='col-2', style='height:100vh; display: block; overflow: auto;color:white; background: rgb(3,19,31, 0.9)')
+        div(class='col my-1')
+          label(for="id_selection" class= "col-form-label") Select a public analysis
+        form(method='POST', action='visualize_public', enctype='multipart/form-data')
+          div(class='col my-1')
+            select(class="form-control" id="public_selection" name='public_selection')
+              option --Select--
+              each graph_name in public_graphs_name 
+                option #{graph_name}
+              option COADREAD
+              option prostate subtype
+          div.container(style = 'display: flex; justify-content: center; align-items: center;', id ='public_submit_div')
+            button.btn(type='submit' style = 'background-color: #234a56; color: white', id='public_submit_btn') Visualize
+        if graphs_options
+          form(method='POST' action = 'visualize_constructed' enctype="multipart/form-data", class = 'form-signin')
+            div(class='col my-1')
+              label(for="private_selection" style='text-align:left') Visualize the result of a previously made analysis
+            div(class='col my-1')
+              select(class="form-control" id="private_selection" name='private_selection')
+                option --Select graph--
+                each c in graphs_options
+                  option(value = c) #{c[1]} (Reconstruction #{c[0]})
+            div.container(style = 'display: flex; justify-content: center; align-items: center;', id='private_submit_div')
+              button.btn(type='submit' style = 'background-color: #234a56; color: white', id='private_submit_btn') Visualize
+      div(class='col-7 cy_div py-2' id='cy' style='height:100vh; border:solid black')
+      div(class='col-3' style='height:100vh; display: block; overflow: auto;color:white; background: rgb(3,19,31, 0.9)') 
+        div.row.pt-3
+          div.col-10.pt-2
+            h4.display-4(style = 'color : white; font-size:20px') Visualize local graphml file:
+          div.col-1()
+            i(class='fa fa-question fa-3x' id='helpIcon')
+        div.container.col-11.mt-3.py-2(id = 'info_div' style='height:120px; background:white; color:black;position:absolute; display:none; z-index:10;') 
+          div.row
+            div.col-10(style='float:left') Here you can upload a local graphml file, which should be the result of a previously conducted TRONCO analysis.
+            div.col-1(style='float:right;' id='close_info')
+              i(class='fa fa-window-close fa-2x' style='color:black;' id='ciao')
+        div(class='row')
+          div.col
+            div(class="input-group pt-2 disabled", id ='file_cluster')
+              fieldset.disabled
+                div( class="custom-file")
+                  input(class="custom-file-input" id='files' name="files[]" type="file")
+                  label(class="custom-file-label" for="CLUSTERinput") Choose graph
+                div.row
+                  div.col.py-2(style='text-align:center') or
+                div.row
+                  div.col
+                    div(id="drop_zone") Drop your file here
+                    output(id = "list")
+        div.container(style = 'display: flex; justify-content: center; align-items: center;')
+          button.btn.mb-2(id='reset_button' type='submit', style = 'background-color: #234a56; color: white; visibility:hidden') Reset graph position
+        div.container.py-2(id = "confidenceValues" style='visibility:hidden; border:dashed 1px') 
+          div.row(id='temporary_label') Graph information will be displayed here
+          div.container(style = 'display: none; justify-content: center; align-items: center;', id='loading_button')
+            div.loader
+          table.table.table-sm(id='table_nodes' style='display:none')
+            tbody
+              tr
+                th(scope='row') Official Name
+                td(id='official_name') 
+              tr
+                th(scope='row') Symbol
+                td(id='symbol') 
+              tr
+                th(scope='row') Gene type
+                td(id='type') 
+              tr
+                th(scope='row') Description
+                td(id='description') 
+          table.table.table-sm(id='table_logic' style='display:none')
+            tbody
+              tr
+                th(scope='row' id='logic_description') 
+              tr
+          table.table(id='table_edges' style='display:none')
+            tbody
+              tr(id='no_conf_row' style='display:none')
+                th No information to display for this edge
+              tr(id='hg_row' style='display:none')
+                th(scope='row') hg
+                td(id='hg_value') 
+              tr(id='tp_row' style='display:none')
+                th(scope='row') tp
+                td(id='tp_value') 
+              tr(id='pr_row' style='display:none')
+                th(scope='row') pr
+                td(id='pr_value') 
+        if content
+          div(style='display:none', id = 'graphstr')=content
+          if (login_logout === 'log-out')
+            form(method='GET' action = '/tronco/user_options' enctype="multipart/form-data")
+              div.container.my-3(style = 'display: flex; justify-content: center; align-items: center;')
+                button.btn.mb-2(id='reset_button' type='submit', style = 'background-color: #234a56; color: white') Reconstruct another model
+            if (!is_public)
+              form(method='GET' action = '/tronco/save' enctype="multipart/form-data")
+                div.container.my-3(style = 'display: flex; justify-content: center; align-items: center;')
+                  button.btn.mb-2(id='reset_button' type='submit', style = 'background-color: #234a56; color: white') Save graph
+              
+          
 
-  
-  div(class='container col-9 cy_div py-2' id='cy' style='float:left; height:100vh; position:absolute')
+      
+     
+      
 
     
     

@@ -5,6 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session')
 var MemoryStore = require('memorystore')(session)
+//Aggiunte per autenticazione
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
 var indexRouter = require('./routes/index');
 var troncoRouter = require('./routes/tronco');
@@ -32,9 +35,13 @@ app.use(session({ store: new MemoryStore({
                 name : "id",
                 }))
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/', indexRouter);
 app.use('/tronco', troncoRouter);
 app.use('/welcome', welcomeRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

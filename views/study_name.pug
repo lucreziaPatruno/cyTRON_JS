@@ -3,36 +3,59 @@ extends layout
 block custom_css
     link(href = "/stylesheets/insert_email.css", rel = "stylesheet", type = "text/css")
 
+block scripts
+    script(src = "/javascripts/study_name.js", type = "text/javascript")
+
 block content
-    div(class = 'container my-5 col-6 py-2' style ='background-color: rgba(3,19,31,0.9); text-align: center')
+    div(class = 'container my-5 col-6 py-2' style ='background-color: rgba(3,19,31,0.9); text-align: center; color:white')
         div(class = 'container')
             form(method='POST' action = '' enctype="multipart/form-data", class = 'form-signin')
                 div(class = 'container py-3', style = 'text-align:center')
-                    h3(style = 'color : white') Insert a name for your study
+                    h3.display-4(style = 'color : white; font-size:30px') Insert a name for your study
+                    
     
                 div(class = 'form-group')
-                    label(for="studyName" class="sr-only") e.g. PicNic-COADREAD
+                    label(for="inputName" class="sr-only") e.g. PicNic-COADREAD
                     input#inputName(type="text" name = 'inputName' style = 'border: solid 1px #234a56' class="form-control" placeholder="e.g. PicNic-COADREAD" required autofocus)
-                div.container(style = 'display: flex; justify-content: center; align-items: center;')
-                    button.btn(type='submit', style = 'background-color: #234a56; color: white') Submit
+                div.container(style='text-align:center', id='type_error')
+                div.container(style = 'display: flex; justify-content: center; align-items: center;', id='start_analysis_div')
+                    button.btn(type='submit', style = 'background-color: #234a56; color: white', id='start_analysis_btn') 
+                        h3.display-4.pt-1(style='font-size:15px;color:white') Submit
         if error 
             ul
                 li!= error
         
         div(class = 'container', style='color:white')
-            if graphs
+            if graphs_options
                 div(class="group py-2") 
                         div(class="item line")
                         div(class="item text") OR
                         div(class="item line")
-                form(method='POST' action = 'visualize_constructed' enctype="multipart/form-data", class = 'form-signin')
+                div.container()
                     div.row
-                        div(class='col my-1')
-                            label(for="graph_selection" style='text-align:left') Visualize the result of a previously made analysis
-                        div(class='col my-1')
-                            select(class="form-control" id="graph_selection" name='graph_selection')
-                                option --Select graph--
-                                each c in graphs
-                                    option(value = c) #{c[1]} (Reconstruction #{c[0]})
-                    div.container(style = 'display: flex; justify-content: center; align-items: center;')
-                        button.btn(type='submit' style = 'background-color: #234a56; color: white') Visualize
+                        div.col.rounded-circle.py-5.px-5.mx-2(style='background-color:rgba(35, 74, 86, 0.2)')
+                            form(method='POST' action = 'visualize_constructed' enctype="multipart/form-data", class = 'form-signin')
+                                div()
+                                    h3.display-4(style='font-size:20px;color:white') Visualize the result of a previously made analysis
+                                div()
+                                    select(class="form-control" id="private_selection" name='private_selection')
+                                        option --Select graph--
+                                        each c in graphs_options
+                                            option(value = c) #{c[1]} (Reconstruction #{c[0]})
+                                div.container.mt-2(style = 'display: flex; justify-content: center; align-items: center;', id='visualize_constructed_div')
+                                    button.btn(type='submit' style = 'background-color: #234a56; color: white', id='visualize_constructed_btn') 
+                                        h3.display-4.pt-1(style='font-size:15px;color:white') Visualize
+                        div.col.rounded-circle.py-5.px-5.mx-2(style='background-color:rgba(35, 74, 86, 0.2)')
+                            form(method='GET' action = 'complete_analysis' enctype="application/x-www-form-urlencoded", class = 'form-signin')
+                                div
+                                    h3.display-4(style='font-size:20px;color:white') Access one of your analysis to reconstruct other models 
+                                div
+                                    select(class="form-control" id="analysis_selection" name='analysis_selection')
+                                        option --Select analysis--
+                                        each a in analysis_names
+                                            option(value = a) #{a} 
+                                div.container.mt-2(style = 'display: flex; justify-content: center; align-items: center;', id='analysis_selection_div')
+                                    button.btn(type='submit' style = 'background-color: #234a56; color: white', id='analysis_selection_btn') 
+                                        h3.display-4.pt-1(style='font-size:15px;color:white') Start
+                    
+                

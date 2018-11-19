@@ -4,48 +4,42 @@ const rscript = require('js-call-r');
 var fs = require('fs')
 // var zip = require('express-zip')
 var request_module = require('request')
+var crypto = require('crypto')
 
-// This function is called when the application is started
-// See welcome.js route file: when a user requests '/welcome/',
-// this function is called
-exports.start_widget_get = function(req, res, next) {
-    var dir = __dirname + '/widget_data'
-    if (!fs.existsSync(dir))
-        fs.mkdirSync(dir)
-    res.render('insert_email')
-}
+const mongodb = require('mongodb')
+const MongoClient = mongodb.MongoClient
+const dburl = "mongodb://localhost:27017/users_prova"
 
-// This function is called when a user insterts his/her email
-exports.start_widget_post = function(req, res, next) {
-    var form = new formidable.IncomingForm()
-    
-    form.parse(req, (err, fields, files) => {
-        // Set session variable to remember the
-        // email of the user for the session
-        req.session.email = fields.inputEmail
-        res.redirect('/tronco/user_options')
-    })
-    
-}
+  
+
 
 // This function is called right after the previous one
 // In tronco.js route file, the route '/tronco/user_options'
 // is associated to this function in case of a get
 exports.show_options_get = function(req, res, next) {
-    if (req.session.email) {
+    if (req.isAuthenticated()) {
         var session_dir =  __dirname + '/widget_data/' + req.session.email
         var options = {} 
         var models_array = []
         var graphs_array = []
-        // Get all the models and graphml files previously constructed by a user:
+        var analysis_names = []
+        // This is the variable which will eventually contain the list of 
+        // graphs reconstructed by the authenticated user
+        req.session.graphs_list = undefined
+        // Get all the analysis previously constructed by a user:
         // for each analysis get models and graphs
         if (fs.existsSync(session_dir)) {
-            files = fs.readdirSync(session_dir) 
+            // read the user folder, which contains a folder for each analysis
+            var files = fs.readdirSync(session_dir) 
+            // Loop on every analysis folder
             files.forEach(function(file, index) {
                 var model_dir = session_dir + '/' + file + '/results'
                 console.log(model_dir)
+                // Now check if the analysis contains the results folder
                 if (fs.existsSync(model_dir)) {
-                    models = fs.readdirSync(model_dir)
+                    var models = fs.readdirSync(model_dir)
+                    // Store the analysis name in a variable
+                    analysis_names.push(file)
                     models.forEach(function(file_model, index) {
                         console.log(file_model)
                         console.log('FILE: ' + file)
@@ -70,12 +64,15 @@ exports.show_options_get = function(req, res, next) {
                 
                 
             })
+             
             options['models'] = models_array
-            options['graphs'] = graphs_array
-            console.log(options)
-            res.render('study_name', options)
+            options['graphs_options'] = graphs_array
+            req.session.graphs_list = options
+            res.render('study_name', {graphs_options : options['graphs_options'],
+            login_logout : 'log-out', login_logout_link : '/tronco/logout',
+            analysis_names : analysis_names})
         } else {
-            res.render('study_name')
+            res.render('study_name', {login_logout : 'log-out', login_logout_link : '/tronco/logout'})
         }
     } else {
         // The session expired -> display home page
@@ -88,14 +85,15 @@ exports.show_options_get = function(req, res, next) {
 // In tronco.js route file, the route '/tronco/user_options'
 // is associated to this function in case of a post
 exports.show_options_post = function(req, res, next) {
-    if (req.session.email) {
+    if (req.isAuthenticated()) {
         var form = new formidable.IncomingForm()
         form.parse(req, (err, fields, files) => {
             title = fields.inputName
             study_dir = __dirname + '/widget_data/' + req.session.email + '/' + title
             if (fs.existsSync(study_dir)) {
                 res.render('study_name', 
-                        {error: 'Error: a study with the same name already exists'})
+                        {error: 'Error: a study with the same name already exists',
+                        login_logout : 'log-out', login_logout_link : '/tronco/logout'})
                 return;
             }
             // Store analysis title in current session
@@ -112,16 +110,18 @@ exports.show_options_post = function(req, res, next) {
 // In tronco.js route file, the route '/tronco'
 // is associated to this function in case of a get
 exports.tronco_widget_get = function(req, res, next) {
-    if (req.session.email) {
+    if (req.isAuthenticated()) {
         var current_directory = __dirname
         current_directory = current_directory.replace(/\\/g, "/")
         // Call the first R script: it checks if every required package is installed
         // If needed, it installs any missing package required
         var script = current_directory + '/load_packages_picnic.R'
-        const result = rscript.callSync(script, 
-                                        {working_directory : current_directory}) //(err, result) => {res.render('widget')})
-        console.log(result)
-        res.render('widget')
+        rscript.call(script, 
+                    {working_directory : current_directory}, (err, result) => {
+                        res.render('widget', {login_logout : 'log-out', login_logout_link : '/tronco/logout'})
+                    })
+        //console.log(result)
+        //res.render('widget', )
     } else {
         // The session expired -> display home page
         res.redirect('/welcome')
@@ -132,7 +132,7 @@ exports.tronco_widget_get = function(req, res, next) {
 // In tronco.js route file, the route '/tronco'
 // is associated to this function in case of a post
 exports.tronco_widget_post = function(req, res, next) {
-    if (req.session.email) {
+    if (req.isAuthenticated()) {
         // Create directories needed to store the pipeline data
         var email_dir = __dirname + '/widget_data/' + req.session.email
         email_dir = email_dir.replace(/\\/g, '/')
@@ -201,7 +201,7 @@ exports.tronco_widget_post = function(req, res, next) {
             var boolean_sep = (fields.boolean_separator_selection === 'Space/tabs') ? '':fields.boolean_separator_selection
             var script = current_directory + '/picnic_import.R'
             console.log(interest_path)
-            const result = rscript.callSync(script, {maf_path : maf_p, 
+            rscript.call(script, {maf_path : maf_p, 
                                     genes_interest : interest_path, 
                                     gistic_path : gistic_p, 
                                     user_directory : session_dir,
@@ -211,7 +211,8 @@ exports.tronco_widget_post = function(req, res, next) {
                                     cluster_separator : cluster_sep,
                                     maf_separator : maf_sep,
                                     gistic_separator : gistic_sep,
-                                    boolean_separator : boolean_sep})
+                                    boolean_separator : boolean_sep},
+                                    (error, result) => {
                         
                             //if (err) {
                             //   console.log('err: ' + err)
@@ -221,7 +222,7 @@ exports.tronco_widget_post = function(req, res, next) {
                                 
                                 //res.download(email_dir + '/MAF.RData')
                                 // res.render('index')
-            if (result.result === 'no_errors') {
+            if (result) {
                 // Save in the session the name of the final dataset to use for reconstruction
                 req.session.to_reconstruct = result.to_plot
                 // Save in the session the names of the columns contained in the cluster dataset
@@ -241,9 +242,11 @@ exports.tronco_widget_post = function(req, res, next) {
                 // render input selection page again
                 res.render('widget', 
                     {errors : ['Attention, there was an error in data input', 
-                            'Make sure to select the correct files']})
+                            'Make sure to select the correct files'],
+                            login_logout : 'log-out', login_logout_link : '/tronco/logout'})
                 
             }
+        })
             
         })
 
@@ -279,9 +282,10 @@ exports.tronco_widget_post = function(req, res, next) {
 // In tronco.js route file, the route '/tronco/cluster_selection'
 // is associated to this function in case of a get
 exports.select_clusters_get = function(req, res, next) {
-    if (req.session.email) {
+    if (req.isAuthenticated()) {
         res.render('cluster_selection', 
-                    {columns : req.session.columns})
+                    {columns : req.session.columns,
+                    login_logout : 'log-out', login_logout_link : '/tronco/logout'})
     } else {
         // The session expired -> display home page
         res.redirect('/welcome')
@@ -292,7 +296,7 @@ exports.select_clusters_get = function(req, res, next) {
 // In tronco.js route file, the route '/tronco/cluster_selection'
 // is associated to this function in case of a post
 exports.select_clusters_post = function(req, res, next) {
-    if (req.session.email) {
+    if (req.isAuthenticated()) {
         var session_dir =  __dirname + '/widget_data/' + 
                             req.session.email + '/' +
                             req.session.title
@@ -310,36 +314,41 @@ exports.select_clusters_post = function(req, res, next) {
             var cluster_file = session_dir + '/uploads/' + req.session.cluster_file
 
             // Call the script for mutation subtyping
-            const result = rscript.callSync(script, 
+            rscript.call(script, 
                 {data : data_path, 
                     // filter_freq : fields.freq_selection, 
                     cluster_column : fields.cluster_selection,
                     id_column : fields.id_selection,
                     cluster_path : cluster_file,
                     reconstruction_dir : session_dir,
-                    separator : req.session.cluster_separator})
+                    separator : req.session.cluster_separator}, (error, result) => {
                                     
             console.log(result)
             // Three possible cases:
             // 1. At least one sample was found for each cluster
             // 2. For some clusters no samples were found
             // 3. There is an error in the files or columns selected
-            if (result.result === 'no_errors') {
-                // Case 1
-                res.redirect('/tronco/reconstruction')
-            } else {
+            if (result) {
+                if (result.result === 'no_errors') {
+                    // Case 1
+                    res.redirect('/tronco/reconstruction')
+                }
                 if (result.result === 'clusters_not_found') {
                     // Case 2
                     req.session.clusters_not_found = result.clusters
                     res.redirect('/tronco/reconstruction')
-                } else
+                }
+            } else {
                 // Case 3
                     res.render('cluster_selection', 
                         {errors: 
                         'Attention, there was an error in the cluster selection process. \nMake sure to select the right columns',
-                        columns : req.session.columns})
+                        columns : req.session.columns,
+                        login_logout : 'log-out', 
+                        login_logout_link : '/tronco/logout'})
                 
             }
+        })
         })
     } else {
         // The session expired -> display home page
@@ -353,9 +362,10 @@ exports.select_clusters_post = function(req, res, next) {
 // is associated to this function in case of a get
 // This function displays a form to select the reconstruction algorithm
 exports.files_loaded_get = function(req, res, next) {
-    if (req.session.email) {
+    if (req.isAuthenticated()) {
         var dir = __dirname + '/widget_data/' + req.session.email + '/' + req.session.title
         var clusters = []
+        console.log('!!!!!' + dir)
         // Get cluster names
         fs.readdir(dir, function(err, files) {
             files.forEach(function(file, index) {
@@ -373,12 +383,16 @@ exports.files_loaded_get = function(req, res, next) {
                 // render the page with a message
                 res.render('widget_reconstruction',
                         {clusters : clusters, 
-                        errors : [req.session.clusters_not_found]})
+                        errors : [req.session.clusters_not_found],
+                        login_logout : 'log-out', 
+                        login_logout_link : '/tronco/logout'})
             } else {
                 // Every cluster contains at least one sample -> 
                 // No message needs to be displayed
                 res.render('widget_reconstruction',
-                            {clusters : clusters})
+                            {clusters : clusters,
+                            login_logout : 'log-out', 
+                            login_logout_link : '/tronco/logout'})
             }
             
         })
@@ -393,7 +407,7 @@ exports.files_loaded_get = function(req, res, next) {
 // In tronco.js route file, the route '/tronco/cluster_selection'
 // is associated to this function in case of a post
 exports.files_loaded_post = function(req, res, next) {
-    if (req.session.email) {
+    if (req.isAuthenticated()) {
         var session_dir = ''
         var script = __dirname + '/picnic_reconstruct.R'
         session_dir =  __dirname + '/widget_data/' + req.session.email + '/' + req.session.title
@@ -421,7 +435,7 @@ exports.files_loaded_post = function(req, res, next) {
                     mutex = ''
                 }
                 console.log(mutex)
-                const result = rscript.callSync(script, {method : 'capri',
+                rscript.call(script, {method : 'capri',
                                             model : session_dir + '/' + fields.cluster_selection + '.RData',
                                             directory : session_dir,
                                             bic : bic,
@@ -431,11 +445,13 @@ exports.files_loaded_post = function(req, res, next) {
                                             name : fields.cluster_selection,
                                             result_dir : result_dir,
                                             mutex : mutex,
-                                            filter_freq : min_freq})
+                                            filter_freq : min_freq}, (error, result)=> {
+
+                                            
                                      
-                                    //(result)=> {
+                                    
                 console.log(result)
-                if (result.result == 'no_errors') {
+                if (result) {
                     // Case when the reconstruction encontered no errors
                     res.redirect('/tronco/tronco_plot')
                 } else {
@@ -456,27 +472,31 @@ exports.files_loaded_post = function(req, res, next) {
                                     {clusters : clusters, 
                                     errors : [req.session.clusters_not_found],
                                     reconstruction_error : 
-                                        'Something went wrong in the reconstruction of cluster ' + fields.cluster_selection + '\nSelect another cluster'})
+                                        'Something went wrong in the reconstruction of cluster ' + fields.cluster_selection + '\nSelect another cluster',
+                                    login_logout : 'log-out', 
+                                    login_logout_link : '/tronco/logout'})
                         } else {
                             res.render('widget_reconstruction',
                                         {clusters : clusters,
                                         reconstruction_error : 
-                                        'Something went wrong in the reconstruction of cluster ' + fields.cluster_selection + '\nSelect another cluster'})
+                                        'Something went wrong in the reconstruction of cluster ' + fields.cluster_selection + '\nSelect another cluster',
+                                        login_logout : 'log-out', login_logout_link : '/tronco/logout'})
                         }
                     })
                 }
+            })
             } else if (fields.caprese_submit) {
                 // Case when the algorithm chosen is caprese
-                const result = rscript.callSync(script, {method : 'caprese',
+                rscript.call(script, {method : 'caprese',
                                                 model : session_dir + '/' + fields.cluster_selection +'.RData',
                                                 directory : session_dir,
                                                 result_dir : result_dir,
                                                 name : fields.cluster_selection,
-                                                filter_freq : min_freq})
+                                                filter_freq : min_freq}, (error, result) => {
                                          
                                         //(result) => {
                 console.log(result)
-                if (result.result == 'no_errors') {
+                if (result) {
                     // Case when the reconstruction encontered no errors
                     res.redirect('/tronco/tronco_plot')
                 } else {
@@ -498,15 +518,18 @@ exports.files_loaded_post = function(req, res, next) {
                                         {clusters : clusters, 
                                         errors : [req.session.clusters_not_found],
                                         reconstruction_error : 
-                                            'Something went wrong in the reconstruction of cluster ' + fields.cluster_selection + '\nSelect another cluster'})
+                                            'Something went wrong in the reconstruction of cluster ' + fields.cluster_selection + '\nSelect another cluster',
+                                            login_logout : 'log-out', login_logout_link : '/tronco/logout'})
                             } else {
                                 res.render('widget_reconstruction',
                                             {clusters : clusters,
                                             reconstruction_error : 
-                                            'Something went wrong in the reconstruction of cluster ' + fields.cluster_selection + '\nSelect another cluster'})
+                                            'Something went wrong in the reconstruction of cluster ' + fields.cluster_selection + '\nSelect another cluster',
+                                            login_logout : 'log-out', login_logout_link : '/tronco/logout'})
                             }
                         })
                 }
+            })
             }
         })
         form.on('fileBegin', function (name, file) {
@@ -534,7 +557,7 @@ exports.files_loaded_post = function(req, res, next) {
 // This function diplays a form to set parameters to visualize and export model
 // in graphml format
 exports.tronco_plot_get = function(req, res, next) {
-    if (req.session.email) {
+    if (req.isAuthenticated()) {
         result_dir =  __dirname + '/widget_data/' + 
             req.session.email + '/' + 
             req.session.title + '/results'
@@ -551,15 +574,49 @@ exports.tronco_plot_get = function(req, res, next) {
                 models_ready.push(name)
             })
             res.render('construction_successful',
-                {models : models_ready})
+                {models : models_ready,
+                    login_logout : 'log-out', 
+                    login_logout_link : '/tronco/logout'})
         })
     }
 }
 
+// This function is called after the reconstruction process ends
+// In tronco.js route file, the route '/tronco/tronco_plot'
+// is associated to this function in case of a post
+// This function diplays a form to set parameters to visualize and export model
+// in graphml format
+exports.tronco_plot_error_get = function(req, res, next) {
+    if (req.isAuthenticated()) {
+        result_dir =  __dirname + '/widget_data/' + 
+            req.session.email + '/' + 
+            req.session.title + '/results'
+        result_dir = result_dir.replace(/\\/g, '/')
+        // Retrieve the models reconstructed in this analysis
+        // so tha the user can select which one he/she wants to plot
+        var models_ready = []
+        fs.readdir(result_dir, function(err, files) {
+            files.forEach(function(file, index) {
+                console.log('!!!' + file)
+                var name = file.split('.')
+                name.pop()
+                name = name.join('.')
+                models_ready.push(name)
+            })
+            res.render('construction_successful',
+                {models : models_ready,
+                    login_logout : 'log-out', 
+                    login_logout_link : '/tronco/logout',
+                    error_plot : 'Something went wrong in the display of the cluster selected, please repeat the reconstruction or reconstruct another cluster'})
+        })
+    }
+}
+
+
 // This function is called after the user sets 
-//parameters for model visualization
+// the parameters for model visualization
 exports.tronco_plot_post = function(req, res, next) {
-    if (req.session.email) {
+    if (req.isAuthenticated()) {
         var form = new formidable.IncomingForm()
         form.parse(req, (err, fields, files) => {
             var current_directory = __dirname
@@ -592,40 +649,66 @@ exports.tronco_plot_post = function(req, res, next) {
             if (!fs.existsSync(plots_dir)) {
                 fs.mkdirSync(plots_dir)
             }
+            
             var name = fields.cluster_selection
             // get the path to the model file to diplay
             var path = result_dir + '/' + fields.cluster_selection + '.RData'
             var script = current_directory + "/test.R"
-            const result = rscript.callSync(script, {modelPath : path,
-                                                    modelName: name, 
-                                                    hg: c_hg, tp: c_tp, 
-                                                    pr : c_pr, 
-                                                    output_dir : plots_dir,
-                                                    pf : pf,
-                                                    sess_id : req.session.id})
-                                            
-                                            //(result) => {//});
-            console.log(result)
-            console.log(result.result)
-            fs.readFile(result.result, 'utf8', function(error, data) {
-                req.session.graph = data
-                req.session.graph_name = name
-                //fs.unlink(result.result)
-                res.render('index', {content : req.session.graph})
-            });
+            rscript.call(script, {modelPath : path,
+                                    modelName: name, 
+                                    hg: c_hg, tp: c_tp, 
+                                    pr : c_pr, 
+                                    output_dir : plots_dir,
+                                    pf : pf,
+                                    sess_id : req.session.id},
+                                (error, result) => {
+                console.log(result)                               
+                if (result) {
+                    // No error occured during script execution
+                    console.log(result)
+                    console.log(result.result)
+                    fs.readFile(result.result, 'utf8', function(error, data) {
+                        req.session.graph_name = name
+                        if (req.session.graphs_list) {
+                            fs.readdir(__dirname + '/public_data/', function(err, files) {
+                                res.render('index', {content : data, 
+                                    graphs_options : req.session.graphs_list['graphs_options'],
+                                    login_logout : 'log-out', login_logout_link : '/tronco/logout',
+                                    public_graphs_name : files})
+                            })
+                            // This is not the first analysis made by the user
+                            
+                            
+                        } else {
+                            fs.readdir(__dirname + '/public_data/', function(err, files) {
+                                res.render('index', {content : data,
+                                    login_logout : 'log-out',
+                                    login_logout_link : '/tronco/logout',
+                                    public_graphs_name : files})
+                            })
+                        }
+                            
+                    });
+                } else if (error){
+                    res.redirect('/tronco/tronco_plot_error')
+                }
+            })
         })
+    } else {
+        res.redirect('/welcome')
     }
 }
 
 // This function is called when a user doesn't start a new reconstruction
 // but chooses to visualize an already built graph
 exports.visualize_constructed_post = function(req, res, next) {
-    if (req.session.email) {
+    if (req.isAuthenticated()) {
         var session_dir = __dirname + '/widget_data/' + 
         req.session.email + '/'
         var form = new formidable.IncomingForm()
         form.parse(req, (err, fields, files) => {
-            var array = JSON.parse(fields.graph_selection);
+            console.log('!!!!' + fields.private_selection)
+            var array = JSON.parse(fields.private_selection);
             // The variable array now contains the study name in the 
             // first position, and the model name in second position
             // Get the path to the graph
@@ -637,7 +720,14 @@ exports.visualize_constructed_post = function(req, res, next) {
                     req.session.title = array[0]
                 }
                 // Render the page for visualization
-                res.render('index', {content : data})
+                fs.readdir(__dirname + '/public_data/', function(err, files) {
+                    res.render('index', {content : data,
+                        graphs_options : req.session.graphs_list['graphs_options'],
+                        login_logout : 'log-out', 
+                        login_logout_link : '/tronco/logout',
+                        public_graphs_name : files})
+                })
+                
             })
         })
     }
@@ -650,10 +740,52 @@ exports.save_model = function(req, res, next) {
     result_dir =  session_dir + '/results/'
     // get dir where graphml files will be stored
     plots_dir = session_dir + '/plots/'
-    /*res.zip([
-        { path: plots_dir + req.session.graph_name + '.graphml', name: '/path/in/zip/file1.name' },
-        { path: result_dir + req.session.graph_name + '.Rdata', name: 'file2.name' }
-      ]);*/
     res.download(plots_dir + req.session.graph_name + '.graphml')
-    // res.download(result_dir + req.session.graph_name + '.Rdata')
+}
+
+// This function is called when a user (could be both authenticated or not)
+// chooses to visualize a public model
+// in this case, when the index page is rendered, a variable which reports that 
+// a public model is being visualized is sent, so that there is not the possibility
+// of saving the graph
+exports.visualize_public_post = function(req, res) {
+    var form = new formidable.IncomingForm()
+    form.parse(req, (err, fields, files) => { 
+        var to_visualize = fields.public_selection
+        var to_visualize_path = __dirname + '/public_data/' + fields.public_selection
+        fs.readFile(to_visualize_path, 'utf8', function(error, data) {
+            if (req.isAuthenticated()) {
+                // Render the page for visualization
+                fs.readdir(__dirname + '/public_data/', function(err, files) {
+                    res.render('index', {content : data,
+                        graphs_options : req.session.graphs_list['graphs_options'],
+                        login_logout : 'log-out', 
+                        login_logout_link : '/tronco/logout',
+                        public_graphs_name : files,
+                    is_public : true})
+                })
+            } else {
+                fs.readdir(__dirname + '/public_data/', function(err, files) {
+                    res.render('index', {content : data,
+                    login_logout : 'log-in',
+                    login_logout_link : '/welcome',
+                    public_graphs_name : files,
+                    is_public : true})
+                })
+            }
+        })
+    })
+}
+
+exports.logout_post = function(req, res) {
+    req.logout()
+    res.redirect('/welcome')
+}
+
+exports.complete_analysis_get = function(req, res) {
+    var analysis_name = req.query.analysis_selection
+    console.log('!!!!!' + analysis_name)
+    req.session.title = analysis_name
+    req.session.clusters_not_found = undefined
+    res.redirect('/tronco/reconstruction')
 }

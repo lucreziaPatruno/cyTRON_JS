@@ -9,10 +9,12 @@ block scripts
 block content
     div(class = 'container main_div col-5 py-3 my-5', style='color: white; text-align:center')
         h1(style='color:white')  The reconstruction was successful
+        if error_plot
+            div()=error_plot
         div.container(style = 'display: flex; justify-content: center; align-items: center;')
             button(class = "btn btn-block" style = 'background-color: #234a56; color: white' data-toggle = 'collapse', data-target = '#tronco_plot', type = 'button') Select the model to plot
         div(id = 'tronco_plot', class = 'collapse my-3')
-            form(method='POST' action = '' enctype="multipart/form-data")
+            form(method='POST' action = '/tronco/tronco_plot' enctype="multipart/form-data")
                 div.container
                     div(class='row', style='text-align:left')
                         div(class='col')

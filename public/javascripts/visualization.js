@@ -1,4 +1,43 @@
 document.addEventListener("DOMContentLoaded", function() {
+    
+    var public_div = document.getElementById('public_submit_div')
+    var public_submit = document.getElementById('public_submit_btn')
+    var public_selection = document.getElementById('public_selection')
+
+    public_div.style.opacity = 0.7
+    public_submit.disabled = true
+
+    public_selection.addEventListener('change', function() {
+        if (public_selection.value == '--Select graph--') {
+            public_div.style.opacity = 0.7
+            public_submit.disabled = true
+        } else {
+            public_div.style.opacity = 1
+            public_submit.disabled = false
+        }
+    })
+
+    if (document.getElementById('private_submit_div')) {
+        var private_submit = document.getElementById('private_submit_btn')
+        var private_div = document.getElementById('private_submit_div')
+        var private_selection = document.getElementById('private_selection')
+
+        private_div.style.opacity = 0.7
+        private_submit.disabled = true
+
+        private_selection.addEventListener('change', function(){
+            if (private_selection.value == '--Select graph--') {
+                private_div.style.opacity = 0.7
+                private_submit.disabled = true
+            } else {
+                private_div.style.opacity = 1
+                private_submit.disabled = false
+            }
+        })
+    
+    }
+    
+    
 loadgraphml = function(graphstr) {
     // A new model has been chosen, so all the information about the previous one need to be deleted:
     document.getElementById('temporary_label').style.visibility = 'visible'
@@ -294,7 +333,14 @@ loadgraphml = function(graphstr) {
     dropZone.addEventListener('dragover', handleDragOver, false);
     dropZone.addEventListener('drop', handleFileSelect, false);
     //}
+    
+    document.getElementById('helpIcon').addEventListener('click', function() {
+        document.getElementById('info_div').style.display = 'block'
+    })
 
+    document.getElementById('close_info').addEventListener('click', function() {
+        document.getElementById('info_div').style.display = 'none'
+    })
 });
 
   

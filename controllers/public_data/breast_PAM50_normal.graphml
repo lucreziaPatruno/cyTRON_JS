@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
+         http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+<!-- Created by igraph -->
+  <key id="g_name" for="graph" attr.name="name" attr.type="string"/>
+  <key id="g_models" for="graph" attr.name="models" attr.type="string"/>
+  <key id="g_informations" for="graph" attr.name="informations" attr.type="string"/>
+  <key id="v_name" for="node" attr.name="name" attr.type="string"/>
+  <key id="v_label" for="node" attr.name="label" attr.type="string"/>
+  <key id="v_type" for="node" attr.name="type" attr.type="string"/>
+  <key id="v_fillcolor" for="node" attr.name="fillcolor" attr.type="string"/>
+  <key id="v_fontcolor" for="node" attr.name="fontcolor" attr.type="string"/>
+  <key id="v_bordercolor" for="node" attr.name="bordercolor" attr.type="string"/>
+  <key id="v_shape" for="node" attr.name="shape" attr.type="string"/>
+  <key id="v_width" for="node" attr.name="width" attr.type="double"/>
+  <key id="v_height" for="node" attr.name="height" attr.type="double"/>
+  <key id="v_borderwidth" for="node" attr.name="borderwidth" attr.type="double"/>
+  <key id="v_cases" for="node" attr.name="cases" attr.type="double"/>
+  <key id="v_sum genotypes" for="node" attr.name="sum genotypes" attr.type="double"/>
+  <key id="e_weight" for="edge" attr.name="weight" attr.type="double"/>
+  <key id="e_line" for="edge" attr.name="line" attr.type="string"/>
+  <key id="e_arrow" for="edge" attr.name="arrow" attr.type="string"/>
+  <key id="e_color" for="edge" attr.name="color" attr.type="string"/>
+  <key id="e_edgelabel" for="edge" attr.name="edgelabel" attr.type="string"/>
+  <key id="e_labelcolor" for="edge" attr.name="labelcolor" attr.type="string"/>
+  <key id="e_width" for="edge" attr.name="width" attr.type="double"/>
+  <key id="e_tp" for="edge" attr.name="tp" attr.type="string"/>
+  <key id="e_pr" for="edge" attr.name="pr" attr.type="string"/>
+  <key id="e_hg" for="edge" attr.name="hg" attr.type="string"/>
+  <graph id="G" edgedefault="directed">
+    <data key="g_name">TCGA BREAST PAM50 Normal</data>
+    <data key="g_models">CAPRI capri_bic - CAPRI capri_aic</data>
+    <data key="g_informations">Generated with TRONCO v2.12.0</data>
+    <node id="n0">
+      <data key="v_name">CDH1</data>
+      <data key="v_label">CDH1
+35% (7)</data>
+      <data key="v_type">Mutation</data>
+      <data key="v_fillcolor">#A2CD5A</data>
+      <data key="v_fontcolor">#000000</data>
+      <data key="v_bordercolor">#000000</data>
+      <data key="v_shape">ellipse</data>
+      <data key="v_width">151.831275720165</data>
+      <data key="v_height">101.22085048011</data>
+      <data key="v_borderwidth">1</data>
+      <data key="v_cases">35</data>
+      <data key="v_sum genotypes">7</data>
+    </node>
+    <node id="n1">
+      <data key="v_name">PIK3CA</data>
+      <data key="v_label">PIK3CA
+36% (7)</data>
+      <data key="v_type">Mutation</data>
+      <data key="v_fillcolor">#A2CD5A</data>
+      <data key="v_fontcolor">#000000</data>
+      <data key="v_bordercolor">#000000</data>
+      <data key="v_shape">ellipse</data>
+      <data key="v_width">154.40329218107</data>
+      <data key="v_height">102.935528120713</data>
+      <data key="v_borderwidth">1</data>
+      <data key="v_cases">36</data>
+      <data key="v_sum genotypes">7</data>
+    </node>
+    <edge source="n1" target="n0">
+      <data key="e_weight">1</data>
+      <data key="e_line">solid</data>
+      <data key="e_arrow">False</data>
+      <data key="e_color">#000000</data>
+      <data key="e_edgelabel">0.21 *\
+&lt; 0.01\
+&lt; 0.01\
+</data>
+      <data key="e_labelcolor">#FF0000</data>
+      <data key="e_width">1</data>
+      <data key="e_tp">0.21</data>
+      <data key="e_pr">&lt; 0.01</data>
+      <data key="e_hg">&lt; 0.01</data>
+    </edge>
+  </graph>
+</graphml>

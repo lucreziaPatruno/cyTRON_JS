@@ -5,8 +5,8 @@ cyTRON in an application for cancer progression analysis. It is an interface to 
 ## Getting started
 This application has been developed using NodeJS. In order to run it it is necessary to install the following:
 * Node.js
-* R
-* Java: make sure that the enviroment variables are set properly ([MAC](https://www.ibm.com/support/knowledgecenter/en/SSPT3X_3.0.0/com.ibm.swg.im.infosphere.biginsights.install.doc/doc/install_install_r.html), [Windows](https://docs.oracle.com/javase/tutorial/essential/environment/paths.html))
+* R: in Windows make sure that the PATH environment variable contains the path to R. Example: programs_folder\R-3.5.0\bin\x64
+* Java: make sure that the environment variables are set properly ([MAC](https://www.ibm.com/support/knowledgecenter/en/SSPT3X_3.0.0/com.ibm.swg.im.infosphere.biginsights.install.doc/doc/install_install_r.html), [Windows](https://docs.oracle.com/javase/tutorial/essential/environment/paths.html))
 
 ### Installing
 

@@ -31,7 +31,7 @@ export.graphml(get(model), file = outputFile, confidence = conf, scale.nodes = 0
 # print(args);
 # print(json);
 # print(args[1]);
-output <- list(result = outputFile);
+output <- list(result = outputFile, status = 'no_errors');
 
 print(toJSON(output));
 # print(result);
