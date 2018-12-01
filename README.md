@@ -2,22 +2,6 @@
 
 cyTRON in an application for cancer progression analysis. It is an interface to the R library **TRONCO** and it supports both the visualization of already constructed models and the creation of new analysis. 
 
-## Getting started
-This application has been developed using NodeJS. In order to run it it is necessary to install the following:
-* Node.js
-* R: in Windows make sure that the PATH environment variable contains the path to R. Example: programs_folder\R-3.5.0\bin\x64
-* Java: make sure that the environment variables are set properly ([MAC](https://www.ibm.com/support/knowledgecenter/en/SSPT3X_3.0.0/com.ibm.swg.im.infosphere.biginsights.install.doc/doc/install_install_r.html), [Windows](https://docs.oracle.com/javase/tutorial/essential/environment/paths.html))
-
-### Installing
-
-* Clone this repository in a folder in your local machine
-* Open the command prompt and cd into the folder
-* Run the command `npm install`
-* Type the following: `npm start`
-* For the time being, open the browser and navigate to http://localhost:3000/. 
-
-Note: no additional R package is necessary, any missing package will be automatically installed on the application's first run.
-
 ### Google Summer of Code
 cyTRON/JS was developed within the GSoC 2018 program, in collaboration with the NRNB organization.
 
