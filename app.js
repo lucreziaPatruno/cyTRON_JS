@@ -33,6 +33,8 @@ app.use(session({ store: new MemoryStore({
                 }),
                 secret : 'First secret',
                 name : "id",
+                saveUninitialized: false,
+                resave: false
                 }))
 
 app.use(passport.initialize());
@@ -61,4 +63,5 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+app.set('port', 8090);
 module.exports = app;

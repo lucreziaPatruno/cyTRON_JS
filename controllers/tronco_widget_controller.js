@@ -430,7 +430,7 @@ exports.files_loaded_post = function(req, res, next) {
                 var aic = fields.aic ? fields.aic:''
                 var mutex = files['MUTEXinput']
                 if (fields.MUTEX && mutex.name != '') {
-                    mutex = maf.path.replace(/\\/g, '/')
+                    mutex = mutex.path.replace(/\\/g, '/')
                 } else {
                     mutex = ''
                 }

@@ -10,6 +10,7 @@ html
         link(href ='/stylesheets/layout.css', rel = 'stylesheet', type = 'text/css')
 
         link(herf='/stylesheets/insert_email.css', rel='stylesheet', type='text/css')
+        
 
         script(src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous", type = 'text/javascript')
         script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous", type = 'text/javascript')
@@ -51,10 +52,11 @@ html
                         div.container.mt-2(style = 'display: flex; justify-content: center; align-items: center;')
                             h4.display-4(style = 'color : white; font-size:15px') If you don't have an account yet, #[a(href='/welcome/signup' style='color : white; text-decoration: underline') please register] to build a cancer progression model
                                     
-                        div(class="group py-2")
-                            div(class="item line")
-                            div(class="item text") OR
-                            div(class="item line")
+                        div(class='container', style='text-align:center; color:white')
+                            div(class="group py-2")
+                                div(class="item line")
+                                div(class="item text") OR
+                                div(class="item line")
 
 
                         div(class='container px-5')

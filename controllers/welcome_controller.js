@@ -16,7 +16,7 @@ var verifier = require('email-verify')
 var infoCodes = verifier.infoCodes
 
 var MongoClient = mongodb.MongoClient;
-var dburl = "mongodb://localhost:27017/users_prova";
+var dburl = "mongodb://localhost:27017/cyTRONJS_users";
 
 graphml( cytoscape, jquery ); // register extension
 
@@ -48,7 +48,7 @@ function decrypt(text){
         // here is where you make a call to the database
         // to find the user based on their username or email address
         MongoClient.connect(dburl, function(err, database) {
-            const users_db = database.db('users_prova')
+            const users_db = database.db('users')
             if (err) {
                 done(err)
             }
@@ -91,7 +91,7 @@ function decrypt(text){
     console.log(`The user id passport saved in the session file store is: ${id}`)
     
     MongoClient.connect(dburl, function(err, database) {
-        const users_db = database.db('users_prova')
+        const users_db = database.db('users')
         if (err) {
             throw err
         }
@@ -169,7 +169,7 @@ exports.signup_post = function(req, res, next) {
             //login_logout : 'log-in', login_logout_link : '/welcome'})
         //} else {
     MongoClient.connect(dburl, function(err, database) {
-        const users_db = database.db('users_prova')
+        const users_db = database.db('users')
         if (err) {
             res.render('signup', {login_logout : 'log-in', login_logout_link : '/welcome'})
         }
