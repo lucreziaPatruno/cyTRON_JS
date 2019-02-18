@@ -47,12 +47,12 @@ if (method == 'capri') {
         }
     }
     model_capri = tronco.capri(input, command = comm, regularization = reg, do.boot = bootstrap)
-    save(model_capri, file = paste0(result_dir, '/', name, '_capri.Rdata'))
+    save(model_capri, file = paste0(result_dir, '/', name, '_capri.RData'))
     
 }
 if (method == 'caprese') {
     model_caprese = tronco.caprese(input)
-    save(model_caprese, file = paste0(result_dir, '/', name, '_caprese.Rdata'))
+    save(model_caprese, file = paste0(result_dir, '/', name, '_caprese.RData'))
 }
 
 # model_caprese = tronco.caprese(get(input))

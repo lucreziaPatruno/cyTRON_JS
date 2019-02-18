@@ -3,13 +3,13 @@ html
     head
         meta(name="viewport", content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1")
         
-        link(href="/cytronjs/cytoscape-panzoom/font-awesome-4.0.3/css/font-awesome.css", rel="stylesheet" type="text/css")
+        link(href="/cytoscape-panzoom/font-awesome-4.0.3/css/font-awesome.css", rel="stylesheet" type="text/css")
 
-        link(href = "/cytronjs/bootswatch/dist/cerulean/bootstrap.min.css", rel = "stylesheet", type = "text/css")
+        link(href = "/bootswatch/dist/cerulean/bootstrap.min.css", rel = "stylesheet", type = "text/css")
 
-        link(href ='/cytronjs/stylesheets/layout.css', rel = 'stylesheet', type = 'text/css')
+        link(href ='/stylesheets/layout.css', rel = 'stylesheet', type = 'text/css')
 
-        link(herf='/cytronjs/stylesheets/insert_email.css', rel='stylesheet', type='text/css')
+        link(herf='/stylesheets/insert_email.css', rel='stylesheet', type='text/css')
 
         script(src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous", type = 'text/javascript')
         script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous", type = 'text/javascript')
@@ -34,11 +34,11 @@ html
                             div(class = 'container px-5')
                                 div(class = 'container', style = 'text-align:center')
                                     h4.display-4(style = 'color : white; font-size:35px') 
-                                        b Insert your username
+                                        b Insert your e-mail
                                     h5.display-4(style = 'color : white; font-size:25px') to generate a cancer-progression analysis
                                 div(class = 'form-group container col-5')
-                                    label(for="inputEmail" class="sr-only") Username
-                                    input#inputEmail(name = 'inputEmail' style = 'border: solid 1px #234a56' class="form-control" placeholder="Username" required autofocus)
+                                    label(for="inputEmail" class="sr-only") Email address
+                                    input#inputEmail(type="email" name = 'inputEmail' style = 'border: solid 1px #234a56' class="form-control" placeholder="Email address" required autofocus)
                                 div(class = 'form-group container col-5')
                                     label(for="inputPassword" class="sr-only") Password
                                     input#inputEmail(type="password" name = 'inputPassword' style = 'border: solid 1px #234a56' class="form-control" placeholder="Password" required autofocus)
@@ -49,22 +49,20 @@ html
                         
                             
                         div.container.mt-2(style = 'display: flex; justify-content: center; align-items: center;')
-                            h4.display-4(style = 'color : white; font-size:15px') If you don't have an account yet, #[a(href='/cytronjs/welcome/signup' style='color : white; text-decoration: underline') please register] to build a cancer progression model
+                            h4.display-4(style = 'color : white; font-size:15px') If you don't have an account yet, #[a(href='/welcome/signup' style='color : white; text-decoration: underline') please register] to build a cancer progression model
                                     
-                        div(class="container", style='color:white; text-align:center')
-                            div(class="group py-2")
-                                div(class="item line")
-                                div(class="item text") OR
-                                div(class="item line")
+                        div(class="group py-2")
+                            div(class="item line")
+                            div(class="item text") OR
+                            div(class="item line")
 
 
                         div(class='container px-5')
                             div(class = 'container', style = 'text-align:center') 
-                                h4.display-4(style = 'color : white; font-size:35px') #[a(href='/cytronjs/welcome/visualization' style='color : white; text-decoration: underline') Access as guest] to visualize an already constructed model
+                                h4.display-4(style = 'color : white; font-size:35px') #[a(href='/welcome/visualization' style='color : white; text-decoration: underline') Access as guest] to visualize an already constructed model
 
                     div.col-2.rounded-circle.py-3.align-self-end(style='background-color: rgba(3,19,31,0.9);text-align: center') 
-                        h4.display-4(style = 'color : white; font-size:25px') #[a(href='https://github.com/BIMIB-DISCo/cyTRON-js/blob/master/examples/instructions.pdf' target='_blank' style='color : white; text-decoration: underline') Read an introductory guide]
-
+                        h4.display-4(style = 'color : white; font-size:25px') Read an introductory guide
                         
                 
                 

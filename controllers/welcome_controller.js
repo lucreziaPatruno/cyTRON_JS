@@ -8,6 +8,7 @@ const LocalStrategy = require('passport-local').Strategy;
 var mongodb = require('mongodb');
 // Module for password encryption
 var bcrypt = require('bcrypt')
+var crypto = require('crypto')
 var BCRYPT_SALT_ROUNDS = 12
 // Module for email encryption
 var crypto = require('crypto')
@@ -16,12 +17,12 @@ var verifier = require('email-verify')
 var infoCodes = verifier.infoCodes
 
 var MongoClient = mongodb.MongoClient;
-var dburl = "mongodb://localhost:27017/users_prova";
+var dburl = "mongodb://localhost:27017/cyTRONJS_users";
 
 graphml( cytoscape, jquery ); // register extension
 
 function encrypt(text){
-    var cipher = crypto.createCipher('aes-256-cbc','d6F3Efeq')
+    var cipher = crypto.createCipher('aes-256-cbc','jghO2Ty')
     var crypted = cipher.update(text,'utf8','hex')
     crypted += cipher.final('hex');
     return crypted;
@@ -48,7 +49,7 @@ function decrypt(text){
         // here is where you make a call to the database
         // to find the user based on their username or email address
         MongoClient.connect(dburl, function(err, database) {
-            const users_db = database.db('users_prova')
+            const users_db = database.db('users')
             if (err) {
                 done(err)
             }
@@ -91,7 +92,7 @@ function decrypt(text){
     console.log(`The user id passport saved in the session file store is: ${id}`)
     
     MongoClient.connect(dburl, function(err, database) {
-        const users_db = database.db('users_prova')
+        const users_db = database.db('users')
         if (err) {
             throw err
         }
@@ -117,7 +118,7 @@ exports.start_widget_get = function(req, res, next) {
     // If the user il logged in visualize his/her
     // home page (the one with options)
     if (req.isAuthenticated())
-        res.redirect('tronco/user_options')
+        res.redirect('/cytronjs/tronco/user_options')
     else
         res.render('insert_email')
 }
@@ -136,7 +137,7 @@ exports.start_widget_post = function(req, res, next) {
  
           if(req.isAuthenticated()) {
             req.session.email = encrypt(req.body.inputEmail)
-            res.redirect('tronco/user_options')
+            res.redirect('/cytronjs/tronco/user_options')
           } else {
                 res.render('insert_email', { error : info.message })
           }
@@ -149,13 +150,13 @@ exports.start_widget_post = function(req, res, next) {
 exports.visualize_model = function(req, res) {
     fs.readdir(__dirname + '/public_data/', function(err, files) {
         res.render('index', {login_logout : 'log-in', 
-            login_logout_link : '/welcome',
+            login_logout_link : '/cytronjs/welcome',
             public_graphs_name : files})
     })
 }
 
 exports.signup_get = function(req, res) {
-    res.render('signup', {login_logout : 'log-in', login_logout_link : '/welcome'})
+    res.render('signup', {login_logout : 'log-in', login_logout_link : '/cytronjs/welcome'})
 }
 
 exports.signup_post = function(req, res, next) {
@@ -169,32 +170,32 @@ exports.signup_post = function(req, res, next) {
             //login_logout : 'log-in', login_logout_link : '/welcome'})
         //} else {
     MongoClient.connect(dburl, function(err, database) {
-        const users_db = database.db('users_prova')
+        const users_db = database.db('users')
         if (err) {
-            res.render('signup', {login_logout : 'log-in', login_logout_link : '/welcome'})
+            res.render('signup', {login_logout : 'log-in', login_logout_link : '/cytronjs/welcome'})
         }
         data = ''
         bcrypt.hash(password, BCRYPT_SALT_ROUNDS, function (err,  hash) {
             var user = {email: encrypt(email), password : hash}
             var collection = users_db.collection('utenti')
             if (err) {
-                res.render('signup', {login_logout : 'log-in', login_logout_link : '/welcome'})
+                res.render('signup', {login_logout : 'log-in', login_logout_link : '/cytronjs/welcome'})
             }
             // Check if a user with the same email aready exists
             collection.find({email : encrypt(email)}).toArray(function(err, docs) {
                 if (err) {
                     // Error during the database search
-                    res.render('signup', {login_logout : 'log-in', login_logout_link : '/welcome'})
+                    res.render('signup', {login_logout : 'log-in', login_logout_link : '/cytronjs/welcome'})
                 }
                 else if (docs.length > 0) {
                     // The database already contains a registered user with the same email
-                    res.render('signup', {invalid_email : 'A user with this e-mail address already exists',
-                    login_logout : 'log-in', login_logout_link : '/welcome'})
+                    res.render('signup', {invalid_email : 'A user with this username address already exists',
+                    login_logout : 'log-in', login_logout_link : '/cytronjs/welcome'})
                 } else {
                     // Insert the new user in the database
                     collection.insert(user, function(err, result) {
                         if (err)
-                            res.render('signup', {login_logout : 'log-in', login_logout_link : '/welcome'})
+                            res.render('signup', {login_logout : 'log-in', login_logout_link : '/cytronjs/welcome'})
                         database.close()
                         // Now automatically authenticate the new user
                         passport.authenticate('local', (err, user, info) => {
@@ -211,7 +212,7 @@ exports.signup_post = function(req, res, next) {
                                 if(req.isAuthenticated()) {
                                 //res.send('you hit the authentication endpoint\n')
                                 req.session.email = encrypt(req.body.inputEmail)
-                                res.redirect('/tronco/user_options')
+                                res.redirect('/cytronjs/tronco/user_options')
                                 } else {
                                     res.render('insert_email', { error : info.message })
                                 }

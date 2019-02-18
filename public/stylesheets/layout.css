@@ -1,6 +1,6 @@
 #prova::after {
   content: "";
-  background:url(/images/top_bg2.jpg);
+  background:url(../images/top_bg2.jpg);
   opacity: 0.9;
   top: 0;
   left: 0;

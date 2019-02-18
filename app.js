@@ -32,7 +32,9 @@ app.use(session({ store: new MemoryStore({
                   checkPeriod: 86400000 // prune expired entries every 24h
                 }),
                 secret : 'First secret',
-                name : "id",
+                  name : "id",
+		  saveUninitialized: false,
+		  resave: false
                 }))
 
 app.use(passport.initialize());

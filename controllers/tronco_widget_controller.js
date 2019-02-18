@@ -69,14 +69,14 @@ exports.show_options_get = function(req, res, next) {
             options['graphs_options'] = graphs_array
             req.session.graphs_list = options
             res.render('study_name', {graphs_options : options['graphs_options'],
-            login_logout : 'log-out', login_logout_link : '/tronco/logout',
+            login_logout : 'log-out', login_logout_link : '/cytronjs/tronco/logout',
             analysis_names : analysis_names})
         } else {
-            res.render('study_name', {login_logout : 'log-out', login_logout_link : '/tronco/logout'})
+            res.render('study_name', {login_logout : 'log-out', login_logout_link : '/cytronjs/tronco/logout'})
         }
     } else {
         // The session expired -> display home page
-        res.redirect('/welcome')
+        res.redirect('/cytronjs/welcome')
     }
 }
 
@@ -93,16 +93,16 @@ exports.show_options_post = function(req, res, next) {
             if (fs.existsSync(study_dir)) {
                 res.render('study_name', 
                         {error: 'Error: a study with the same name already exists',
-                        login_logout : 'log-out', login_logout_link : '/tronco/logout'})
+                        login_logout : 'log-out', login_logout_link : '/cytronjs/tronco/logout'})
                 return;
             }
             // Store analysis title in current session
             req.session.title = title
-            res.redirect('/tronco')
+            res.redirect('/cytronjs/tronco')
         })
     } else {
         // The session expired -> display home page
-        res.redirect('/welcome')
+        res.redirect('/cytronjs/welcome')
     }
 }
 
@@ -117,14 +117,16 @@ exports.tronco_widget_get = function(req, res, next) {
         // If needed, it installs any missing package required
         var script = current_directory + '/load_packages_picnic.R'
         rscript.call(script, 
-                    {working_directory : current_directory}, (err, result) => {
-                        res.render('widget', {login_logout : 'log-out', login_logout_link : '/tronco/logout'})
+                     {working_directory : current_directory}, (err, result) => {
+			 if (err)
+			     console.log(err)
+                        res.render('widget', {login_logout : 'log-out', login_logout_link : '/cytronjs/tronco/logout'})
                     })
         //console.log(result)
         //res.render('widget', )
     } else {
         // The session expired -> display home page
-        res.redirect('/welcome')
+        res.redirect('/cytronjs/welcome')
     }
 };
 
@@ -231,19 +233,20 @@ exports.tronco_widget_post = function(req, res, next) {
                     // Save in the session the cluster separator
                     req.session.cluster_separator = cluster_sep
                     // Render page to select columns for cluster subtyping
-                    res.redirect('/tronco/cluster_selection')
+                    res.redirect('/cytronjs/tronco/cluster_selection')
                 } else {
                     // No cluster file has been uploaded -> proceed directly to reconstruction page
-                    res.redirect('/tronco/reconstruction')
+                    res.redirect('/cytronjs/tronco/reconstruction')
                 
                 }
             } else {
                 // Some error occured during script execution ->
                 // render input selection page again
+		console.log(err)
                 res.render('widget', 
                     {errors : ['Attention, there was an error in data input', 
                             'Make sure to select the correct files'],
-                            login_logout : 'log-out', login_logout_link : '/tronco/logout'})
+                            login_logout : 'log-out', login_logout_link : '/cytronjs/tronco/logout'})
                 
             }
         })
@@ -273,7 +276,7 @@ exports.tronco_widget_post = function(req, res, next) {
         //return next()
     } else {
         // The session expired -> display home page
-        res.redirect('/welcome')
+        res.redirect('/cytronjs/welcome')
     }  
 }
 
@@ -285,10 +288,10 @@ exports.select_clusters_get = function(req, res, next) {
     if (req.isAuthenticated()) {
         res.render('cluster_selection', 
                     {columns : req.session.columns,
-                    login_logout : 'log-out', login_logout_link : '/tronco/logout'})
+                    login_logout : 'log-out', login_logout_link : '/cytronjs/tronco/logout'})
     } else {
         // The session expired -> display home page
-        res.redirect('/welcome')
+        res.redirect('/cytronjs/welcome')
     }
 }
 
@@ -331,12 +334,12 @@ exports.select_clusters_post = function(req, res, next) {
             if (result) {
                 if (result.result === 'no_errors') {
                     // Case 1
-                    res.redirect('/tronco/reconstruction')
+                    res.redirect('/cytronjs/tronco/reconstruction')
                 }
                 if (result.result === 'clusters_not_found') {
                     // Case 2
                     req.session.clusters_not_found = result.clusters
-                    res.redirect('/tronco/reconstruction')
+                    res.redirect('/cytronjs/tronco/reconstruction')
                 }
             } else {
                 // Case 3
@@ -345,14 +348,14 @@ exports.select_clusters_post = function(req, res, next) {
                         'Attention, there was an error in the cluster selection process. \nMake sure to select the right columns',
                         columns : req.session.columns,
                         login_logout : 'log-out', 
-                        login_logout_link : '/tronco/logout'})
+                        login_logout_link : '/cytronjs/tronco/logout'})
                 
             }
         })
         })
     } else {
         // The session expired -> display home page
-        res.redirect('/welcome')
+        res.redirect('/cytronjs/welcome')
     }
 }
 
@@ -385,20 +388,20 @@ exports.files_loaded_get = function(req, res, next) {
                         {clusters : clusters, 
                         errors : [req.session.clusters_not_found],
                         login_logout : 'log-out', 
-                        login_logout_link : '/tronco/logout'})
+                        login_logout_link : '/cytronjs/tronco/logout'})
             } else {
                 // Every cluster contains at least one sample -> 
                 // No message needs to be displayed
                 res.render('widget_reconstruction',
                             {clusters : clusters,
                             login_logout : 'log-out', 
-                            login_logout_link : '/tronco/logout'})
+                            login_logout_link : '/cytronjs/tronco/logout'})
             }
             
         })
     } else {
         // The session expired -> display home page
-        res.redirect('/welcome')
+        res.redirect('/cytronjs/welcome')
     }
 }
 
@@ -453,7 +456,7 @@ exports.files_loaded_post = function(req, res, next) {
                 console.log(result)
                 if (result) {
                     // Case when the reconstruction encontered no errors
-                    res.redirect('/tronco/tronco_plot')
+                    res.redirect('/cytronjs/tronco/tronco_plot')
                 } else {
                     // This is the case when reconstruction fails -> the page must
                     // be reloaded.
@@ -474,13 +477,13 @@ exports.files_loaded_post = function(req, res, next) {
                                     reconstruction_error : 
                                         'Something went wrong in the reconstruction of cluster ' + fields.cluster_selection + '\nSelect another cluster',
                                     login_logout : 'log-out', 
-                                    login_logout_link : '/tronco/logout'})
+                                    login_logout_link : '/cytronjs/tronco/logout'})
                         } else {
                             res.render('widget_reconstruction',
                                         {clusters : clusters,
                                         reconstruction_error : 
                                         'Something went wrong in the reconstruction of cluster ' + fields.cluster_selection + '\nSelect another cluster',
-                                        login_logout : 'log-out', login_logout_link : '/tronco/logout'})
+                                        login_logout : 'log-out', login_logout_link : '/cytronjs/tronco/logout'})
                         }
                     })
                 }
@@ -498,7 +501,7 @@ exports.files_loaded_post = function(req, res, next) {
                 console.log(result)
                 if (result) {
                     // Case when the reconstruction encontered no errors
-                    res.redirect('/tronco/tronco_plot')
+                    res.redirect('/cytronjs/tronco/tronco_plot')
                 } else {
                     // This is the case when reconstruction fails -> the page must
                     // be reloaded.
@@ -519,13 +522,13 @@ exports.files_loaded_post = function(req, res, next) {
                                         errors : [req.session.clusters_not_found],
                                         reconstruction_error : 
                                             'Something went wrong in the reconstruction of cluster ' + fields.cluster_selection + '\nSelect another cluster',
-                                            login_logout : 'log-out', login_logout_link : '/tronco/logout'})
+                                            login_logout : 'log-out', login_logout_link : '/cytronjs/tronco/logout'})
                             } else {
                                 res.render('widget_reconstruction',
                                             {clusters : clusters,
                                             reconstruction_error : 
                                             'Something went wrong in the reconstruction of cluster ' + fields.cluster_selection + '\nSelect another cluster',
-                                            login_logout : 'log-out', login_logout_link : '/tronco/logout'})
+                                            login_logout : 'log-out', login_logout_link : '/cytronjs/tronco/logout'})
                             }
                         })
                 }
@@ -547,7 +550,7 @@ exports.files_loaded_post = function(req, res, next) {
         })
     } else {
         // The session expired -> display home page
-        res.redirect('/welcome')
+        res.redirect('/cytronjs/welcome')
     }
 }
 
@@ -576,7 +579,7 @@ exports.tronco_plot_get = function(req, res, next) {
             res.render('construction_successful',
                 {models : models_ready,
                     login_logout : 'log-out', 
-                    login_logout_link : '/tronco/logout'})
+                    login_logout_link : '/cytronjs/tronco/logout'})
         })
     }
 }
@@ -606,7 +609,7 @@ exports.tronco_plot_error_get = function(req, res, next) {
             res.render('construction_successful',
                 {models : models_ready,
                     login_logout : 'log-out', 
-                    login_logout_link : '/tronco/logout',
+                    login_logout_link : '/cytronjs/tronco/logout',
                     error_plot : 'Something went wrong in the display of the cluster selected, please repeat the reconstruction or reconstruct another cluster'})
         })
     }
@@ -662,7 +665,8 @@ exports.tronco_plot_post = function(req, res, next) {
                                     pf : pf,
                                     sess_id : req.session.id},
                                 (error, result) => {
-                console.log(result)                               
+				    console.log(result)
+				    console.log(error)
                 if (result) {
                     // No error occured during script execution
                     console.log(result)
@@ -673,7 +677,7 @@ exports.tronco_plot_post = function(req, res, next) {
                             fs.readdir(__dirname + '/public_data/', function(err, files) {
                                 res.render('index', {content : data, 
                                     graphs_options : req.session.graphs_list['graphs_options'],
-                                    login_logout : 'log-out', login_logout_link : '/tronco/logout',
+                                    login_logout : 'log-out', login_logout_link : '/cytronjs/tronco/logout',
                                     public_graphs_name : files})
                             })
                             // This is not the first analysis made by the user
@@ -683,19 +687,19 @@ exports.tronco_plot_post = function(req, res, next) {
                             fs.readdir(__dirname + '/public_data/', function(err, files) {
                                 res.render('index', {content : data,
                                     login_logout : 'log-out',
-                                    login_logout_link : '/tronco/logout',
+                                    login_logout_link : '/cytronjs/tronco/logout',
                                     public_graphs_name : files})
                             })
                         }
                             
                     });
                 } else if (error){
-                    res.redirect('/tronco/tronco_plot_error')
+                    res.redirect('/cytronjs/tronco/tronco_plot_error')
                 }
             })
         })
     } else {
-        res.redirect('/welcome')
+        res.redirect('/cytronjs/welcome')
     }
 }
 
@@ -724,7 +728,7 @@ exports.visualize_constructed_post = function(req, res, next) {
                     res.render('index', {content : data,
                         graphs_options : req.session.graphs_list['graphs_options'],
                         login_logout : 'log-out', 
-                        login_logout_link : '/tronco/logout',
+                        login_logout_link : '/cytronjs/tronco/logout',
                         public_graphs_name : files})
                 })
                 
@@ -760,7 +764,7 @@ exports.visualize_public_post = function(req, res) {
                     res.render('index', {content : data,
                         graphs_options : req.session.graphs_list['graphs_options'],
                         login_logout : 'log-out', 
-                        login_logout_link : '/tronco/logout',
+                        login_logout_link : '/cytronjs/tronco/logout',
                         public_graphs_name : files,
                     is_public : true})
                 })
@@ -768,7 +772,7 @@ exports.visualize_public_post = function(req, res) {
                 fs.readdir(__dirname + '/public_data/', function(err, files) {
                     res.render('index', {content : data,
                     login_logout : 'log-in',
-                    login_logout_link : '/welcome',
+                    login_logout_link : 'welcome',
                     public_graphs_name : files,
                     is_public : true})
                 })
@@ -779,13 +783,12 @@ exports.visualize_public_post = function(req, res) {
 
 exports.logout_post = function(req, res) {
     req.logout()
-    res.redirect('/welcome')
+    res.redirect('/cytronjs/welcome')
 }
 
 exports.complete_analysis_get = function(req, res) {
     var analysis_name = req.query.analysis_selection
-    console.log('!!!!!' + analysis_name)
     req.session.title = analysis_name
     req.session.clusters_not_found = undefined
-    res.redirect('/tronco/reconstruction')
+    res.redirect('/cytronjs/tronco/reconstruction')
 }

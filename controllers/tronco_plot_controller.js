@@ -95,35 +95,3 @@ exports.plot_graph_post = function(req, res, next) {
         
     })
 }
-/*exports.plot_graph_post = [
-    body('ModelChioce', 'please upload Rdata file').custom((value, {req}) => {
-        //var extension = (path.extname(value)).toLowerCase();
-        console.log(req.body.ModelChoice);
-        return true;
-        //return extension == '.RData';
-    }),
-
-    (req, res, next) => {
-        const errors = validationResult(req);
-
-        if (!errors.isEmpty()) {
-            console.log('errori');
-            console.log(req.body.confidence)
-            res.render('tronco', {model : req.body.ModelChoice, confidence : req.body.confidence, errors: errors.array() })
-            return;
-        } else {
-            var form = new formidable.IncomingForm();
-            form.on('fileBegin', function (name, file) {
-                file.path = __dirname + '/uploads/' + file.name;
-            });
-        
-            form.on('file', function (name, file) {
-                console.log('file caricato:' + file.name)
-                
-            })
-
-               
-            //console.log(out);
-        }
-    }
-];*/
