@@ -2,12 +2,12 @@ var express = require('express');
 var router = express.Router();
 
 var welcome_controller = require('../controllers/welcome_controller');
-var tronco_controller = require('../controllers/tronco_plot_controller');
+//var tronco_controller = require('../controllers/tronco_plot_controller');
 var widget = require('../controllers/tronco_widget_controller')
  
-router.get('/tronco/troncoPlot', tronco_controller.plot_graph_get);
+//router.get('/tronco/troncoPlot', tronco_controller.plot_graph_get);
 
-router.post('/tronco/troncoPlot', tronco_controller.plot_graph_post);
+//router.post('/tronco/troncoPlot', tronco_controller.plot_graph_post);
 
 router.get('/', welcome_controller.start_widget_get)
 
